@@ -35,6 +35,7 @@ defmodule PlayerStats.MixProject do
     [
       {:crawler, "~> 1.1.1"},
       {:ecto_sql, "~> 3.4"},
+      {:floki, "~> 0.30.1"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:phoenix, "~> 1.5.5"},
