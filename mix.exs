@@ -33,18 +33,19 @@ defmodule PlayerStats.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:crawler, "~> 1.1.1"},
+      {:ecto_sql, "~> 3.4"},
+      {:gettext, "~> 0.11"},
+      {:jason, "~> 1.0"},
       {:phoenix, "~> 1.5.5"},
       {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2"},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:telemetry_poller, "~> 0.4"}
     ]
   end
 
