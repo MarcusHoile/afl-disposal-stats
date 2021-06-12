@@ -9,7 +9,7 @@ defmodule PlayerStats.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
-      aliases: aliases(),
+      aliases: aliases(Mix.env()),
       deps: deps()
     ]
   end
@@ -25,7 +25,8 @@ defmodule PlayerStats.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "dev/support", "test/support"]
+  defp elixirc_paths(:dev), do: ["lib", "dev/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -56,7 +57,16 @@ defmodule PlayerStats.MixProject do
   #     $ mix setup
   #
   # See the documentation for `Mix` for more info on aliases.
-  defp aliases do
+  defp aliases(:test) do
+    [
+      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+    ]
+  end
+
+  defp aliases(_) do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],

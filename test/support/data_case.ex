@@ -18,7 +18,7 @@ defmodule PlayerStats.DataCase do
 
   using do
     quote do
-      alias PlayerStats.Repo
+      alias PlayerStats.{Repo, Schema}
 
       import Ecto
       import Ecto.Changeset
@@ -33,6 +33,8 @@ defmodule PlayerStats.DataCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(PlayerStats.Repo, {:shared, self()})
     end
+
+    PlayerStats.Seeds.insert!()
 
     :ok
   end

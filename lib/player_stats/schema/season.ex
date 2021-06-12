@@ -4,7 +4,7 @@ defmodule PlayerStats.Schema.Season do
   alias PlayerStats.Schema
 
   schema "seasons" do
-    field :year, :string
+    field :year, :integer
 
     has_many :team_seasons, Schema.TeamSeason
     has_many :teams, through: [:team_seasons, :team]

@@ -7,8 +7,37 @@
 # General application configuration
 use Mix.Config
 
+config :crawler, root_url: "https://afltables.com/afl/seas/2021.html"
+
 config :player_stats,
-  ecto_repos: [PlayerStats.Repo]
+  ecto_repos: [PlayerStats.Repo],
+  legend: %{
+    "#" => "guernsey_number",
+    "Player" => "player_name",
+    "KI" => "kicks",
+    "MK" => "marks",
+    "HB" => "handballs",
+    "DI" => "disposals",
+    "GL" => "goals",
+    "BH" => "behinds",
+    "HO" => "hitouts",
+    "TK" => "tackles",
+    "RB" => "rebound_50s",
+    "IF" => "inside_50s",
+    "CL" => "clearances",
+    "CG" => "clangers",
+    "FF" => "free_kicks_for",
+    "FA" => "free_kicks_against",
+    "BR" => "brownlow_votes",
+    "CP" => "contested_possessions",
+    "UP" => "uncontested_possessions",
+    "CM" => "contested_marks",
+    "MI" => "marks_inside_50",
+    "1%" => "one_percenters",
+    "BO" => "bounces",
+    "GA" => "goal_assists",
+    "%P" => "percentage_of_game_playes"
+  }
 
 # Configures the endpoint
 config :player_stats, PlayerStatsWeb.Endpoint,
