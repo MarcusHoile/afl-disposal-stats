@@ -13,8 +13,7 @@ defmodule PlayerStats.Repo.Migrations.CreateSeasonPlayers do
     end
 
     create index(:player_seasons, [:season_id])
-    create index(:player_seasons, [:team_season_id])
     create index(:player_seasons, [:team_id])
-    create unique_index(:player_seasons, [:player_id, :team_id])
+    create unique_index(:player_seasons, [:player_id, :team_season_id])
   end
 end

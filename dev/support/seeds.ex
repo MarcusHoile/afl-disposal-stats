@@ -19,7 +19,7 @@ defmodule PlayerStats.Seeds do
       "Fremantle Dockers",
       "Geelong Cats",
       "Gold Coast Suns",
-      "GWS Giants",
+      "Greater Western Sydney Giants",
       "Hawthorn Hawks",
       "Melbourne Demons",
       "North Melbourne Kangaroos",

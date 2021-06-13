@@ -5,10 +5,13 @@ defmodule PlayerStats.Crawler.Scraper do
   import Ecto.Changeset
   alias PlayerStats.{Repo, Schema}
 
-  def scrape(%Page{url: url, body: body, opts: _opts} = page) do
+  def scrape(
+        %Page{url: "https://afltables.com/afl/stats/games" <> _ = url, body: body, opts: _opts} =
+          page
+      ) do
     {:ok, html} = Floki.parse_document(body)
 
-    with {:ok, _page} <- find_or_create_page(url),
+    with {:ok, db_page} <- find_or_create_page(url),
          {:ok, team_season_a} <- find_or_create_team_season(html, 1),
          {:ok, team_season_b} <- find_or_create_team_season(html, 2),
          {:ok, game} <- find_or_create_game(html, url),
@@ -21,12 +24,17 @@ defmodule PlayerStats.Crawler.Scraper do
            save_team_data(html, "center > table:nth-of-type(5)", %{
              team_season: team_season_b,
              game: game
-           }) do
+           }),
+         {:ok, _db_page} <- mark_page_scraped(db_page) do
       {:ok, page}
     else
       _wtf ->
         {:ok, page}
     end
+  end
+
+  def scrape(page) do
+    {:ok, page}
   end
 
   defp save_team_data(html, selector, %{team_season: team_season, game: game}) do
@@ -70,9 +78,8 @@ defmodule PlayerStats.Crawler.Scraper do
          %{id: team_season_id} = team_season
        ) do
     from(ps in PlayerStats.Schema.PlayerSeason,
-      join: ts in assoc(ps, :team_season),
-      on: ts.id == ^team_season_id,
       preload: :player,
+      where: ps.team_season_id == ^team_season_id,
       where: ps.guernsey_number == ^number
     )
     |> PlayerStats.Repo.one()
@@ -189,9 +196,6 @@ defmodule PlayerStats.Crawler.Scraper do
         |> PlayerStats.Schema.GamePlayer.changeset(player_data)
     end
     |> PlayerStats.Repo.insert_or_update()
-
-    # player_data
-    # |> Map.take(~w(guernsey_number player_name kicks handballs marks disposals goals b))
   end
 
   # TODO figure out how to find player, prolly need to scrape more players details eg DOB
@@ -266,11 +270,17 @@ defmodule PlayerStats.Crawler.Scraper do
     |> Repo.get_by(url: url)
     |> case do
       nil ->
-        %Schema.Page{url: url}
+        %Schema.Page{scraped: false, url: url}
         |> Repo.insert()
 
       page ->
         {:ok, page}
     end
+  end
+
+  defp mark_page_scraped(db_page) do
+    db_page
+    |> change(scraped: true)
+    |> Repo.update()
   end
 end

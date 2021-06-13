@@ -4,7 +4,7 @@ defmodule PlayerStats.Factory do
   # Factories
 
   def build(:page) do
-    %Schema.Page{url: "http://example.com/path/to/page"}
+    %Schema.Page{scraped: false, url: "http://example.com/path/to/page"}
   end
 
   def build(:player) do

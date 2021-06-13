@@ -120,7 +120,7 @@ defmodule PlayerStats.Crawler.ScraperTest do
       insert!(:page, url: url)
       {:ok, %Page{}} = Scraper.scrape(page)
 
-      assert %{url: "https://afltables.com/afl/stats/games/2021/031420210318.html"} =
+      assert %{url: "https://afltables.com/afl/stats/games/2021/031420210318.html", scraped: true} =
                Repo.one(Schema.Page)
     end
   end
