@@ -24,6 +24,7 @@ defmodule PlayerStats.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import PlayerStats.DataCase
+      import PlayerStats.Factory
     end
   end
 

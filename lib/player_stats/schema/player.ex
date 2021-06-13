@@ -7,6 +7,7 @@ defmodule PlayerStats.Schema.Player do
     field :first_name, :string
     field :last_name, :string
 
+    has_many :game_players, Schema.GamePlayer
     has_many :player_seasons, Schema.PlayerSeason
     has_many :teams, through: [:player_seasons, :team]
 

@@ -3,11 +3,13 @@ defmodule PlayerStats.Crawler.Scraper do
   alias Crawler.Store.Page
   import Ecto.Query, only: [from: 2]
   import Ecto.Changeset
+  alias PlayerStats.{Repo, Schema}
 
   def scrape(%Page{url: url, body: body, opts: _opts} = page) do
     {:ok, html} = Floki.parse_document(body)
 
-    with {:ok, team_season_a} <- find_or_create_team_season(html, 1),
+    with {:ok, _page} <- find_or_create_page(url),
+         {:ok, team_season_a} <- find_or_create_team_season(html, 1),
          {:ok, team_season_b} <- find_or_create_team_season(html, 2),
          {:ok, game} <- find_or_create_game(html, url),
          :ok <-
@@ -187,7 +189,7 @@ defmodule PlayerStats.Crawler.Scraper do
   # TODO figure out how to find player, prolly need to scrape more players details eg DOB
   # for now just create the player
   defp find_or_create_player(%{"player_name" => player_name}, _team_season) do
-    [first_name, last_name] = String.split(player_name, ", ")
+    [last_name, first_name] = String.split(player_name, ", ")
 
     %PlayerStats.Schema.Player{}
     |> PlayerStats.Schema.Player.changeset(%{first_name: first_name, last_name: last_name})
@@ -249,5 +251,18 @@ defmodule PlayerStats.Crawler.Scraper do
     %{"round" => round} = Regex.named_captures(~r/(?<=Round: )(?<round>\d+)/, row)
 
     String.to_integer(round)
+  end
+
+  defp find_or_create_page(url) do
+    Schema.Page
+    |> Repo.get_by(url: url)
+    |> case do
+      nil ->
+        %Schema.Page{url: url}
+        |> Repo.insert()
+
+      page ->
+        {:ok, page}
+    end
   end
 end
