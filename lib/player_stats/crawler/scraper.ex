@@ -168,7 +168,9 @@ defmodule PlayerStats.Crawler.Scraper do
        ) do
     from(gp in PlayerStats.Schema.GamePlayer,
       join: ps in assoc(gp, :player_season),
-      on: ps.id == ^player_season_id
+      on: ps.id == ^player_season_id,
+      where: gp.game_id == ^game_id,
+      where: gp.player_id == ^player_id
     )
     |> PlayerStats.Repo.one()
     |> case do

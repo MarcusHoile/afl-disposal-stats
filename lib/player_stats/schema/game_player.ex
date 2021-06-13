@@ -3,10 +3,10 @@ defmodule PlayerStats.Schema.GamePlayer do
   import Ecto.Changeset
 
   schema "game_players" do
-    field :kicks, :integer
-    field :handballs, :integer
-    field :disposals, :integer
-    field :goals, :integer
+    field :kicks, :integer, default: 0
+    field :handballs, :integer, default: 0
+    field :disposals, :integer, default: 0
+    field :goals, :integer, default: 0
     field :stats, :map
 
     belongs_to :game, PlayerStats.Schema.Game
