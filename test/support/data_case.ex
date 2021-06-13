@@ -35,7 +35,7 @@ defmodule PlayerStats.DataCase do
       Ecto.Adapters.SQL.Sandbox.mode(PlayerStats.Repo, {:shared, self()})
     end
 
-    PlayerStats.Seeds.insert!()
+    PlayerStats.Seeds.insert_teams!()
 
     :ok
   end

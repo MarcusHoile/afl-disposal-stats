@@ -8,5 +8,6 @@ defmodule PlayerStats.Repo.Migrations.CreateSeasons do
       timestamps()
     end
 
+    create unique_index(:seasons, [:year])
   end
 end

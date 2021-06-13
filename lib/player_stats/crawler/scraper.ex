@@ -13,8 +13,15 @@ defmodule PlayerStats.Crawler.Scraper do
          {:ok, team_season_b} <- find_or_create_team_season(html, 2),
          {:ok, game} <- find_or_create_game(html, url),
          :ok <-
-           save_team_data(html, "#sortableTable0", %{team_season: team_season_a, game: game}),
-         :ok <- save_team_data(html, "#sortableTable1", %{team_season: team_season_b, game: game}) do
+           save_team_data(html, "center > table:nth-of-type(3)", %{
+             team_season: team_season_a,
+             game: game
+           }),
+         :ok <-
+           save_team_data(html, "center > table:nth-of-type(5)", %{
+             team_season: team_season_b,
+             game: game
+           }) do
       {:ok, page}
     else
       _wtf ->
@@ -109,7 +116,6 @@ defmodule PlayerStats.Crawler.Scraper do
     |> Floki.children()
     |> Enum.map(fn node ->
       node
-      |> Floki.find("a")
       |> Floki.text()
     end)
     |> Enum.map(&Map.get(legend(), &1))

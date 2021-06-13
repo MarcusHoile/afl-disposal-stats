@@ -1,9 +1,15 @@
 defmodule PlayerStats.Seeds do
   def insert! do
     insert_teams!()
+    insert_season!()
+
   end
 
-  defp insert_teams! do
+  defp insert_season! do
+    PlayerStats.Repo.insert!(%PlayerStats.Schema.Season{year: 2021})
+  end
+
+  def insert_teams! do
     teams = [
       "Adelaide Crows",
       "Brisbane Lions",
