@@ -4,6 +4,7 @@ defmodule PlayerStats.Schema.Game do
 
   schema "games" do
     field :external_id, :string
+    field :played_at, :utc_datetime
     field :round, :integer
     belongs_to :season, PlayerStats.Schema.Season
 
@@ -16,7 +17,7 @@ defmodule PlayerStats.Schema.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:external_id, :round])
-    |> validate_required([:external_id, :round])
+    |> cast(attrs, [:external_id, :played_at, :round])
+    |> validate_required([:external_id, :played_at, :round])
   end
 end

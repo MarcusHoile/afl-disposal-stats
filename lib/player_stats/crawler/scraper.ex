@@ -236,7 +236,11 @@ defmodule PlayerStats.Crawler.Scraper do
     |> case do
       nil ->
         %PlayerStats.Schema.Game{}
-        |> PlayerStats.Schema.Game.changeset(%{external_id: game_id, round: find_round(html)})
+        |> PlayerStats.Schema.Game.changeset(%{
+          external_id: game_id,
+          played_at: find_played_at(html),
+          round: find_round(html)
+        })
         |> PlayerStats.Repo.insert()
 
       game ->
@@ -251,6 +255,20 @@ defmodule PlayerStats.Crawler.Scraper do
   defp current_year_as_string do
     current_year()
     |> Integer.to_string()
+  end
+
+  defp find_played_at(html) do
+    row =
+      html
+      |> Floki.find("table:first-of-type")
+      |> Floki.find("tr:first-of-type td:nth-child(2)")
+      |> Floki.text()
+
+    %{"played_at" => played_at} =
+      Regex.named_captures(~r/(?<=Date:).+(?<played_at>\d\d-[a-zA-Z]+\-\d+)/, row)
+
+    played_at
+    |> Timex.parse!("%d-%b-%Y", :strftime)
   end
 
   defp find_round(html) do
