@@ -7,6 +7,8 @@
 # General application configuration
 use Mix.Config
 
+config :chartkick, json_serializer: Jason
+
 config :crawler, root_url: "https://afltables.com/afl/seas/2021.html"
 
 config :player_stats,
