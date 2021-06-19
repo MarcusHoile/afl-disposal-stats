@@ -44,7 +44,7 @@ defmodule PlayerStats.Crawler.UrlFilter do
   end
 
   defp visited?(url) do
-    from(p in PlayerStats.Schema.Page, where: p.url == ^url)
+    from(p in PlayerStats.Schema.Page, where: p.url == ^url, where: p.scraped)
     |> PlayerStats.Repo.exists?()
   end
 end

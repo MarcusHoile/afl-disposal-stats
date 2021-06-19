@@ -3,20 +3,10 @@ defmodule PlayerStatsWeb.PageView do
 
   def line_chart_for_disposals(data) do
     data
-    |> Enum.map(fn %{round: round, disposals: disposals} ->
-      [round, disposals]
+    |> Enum.map(fn %{played_at: played_at, disposals: disposals} ->
+      [played_at, disposals]
     end)
     |> Jason.encode!()
-    |> IO.inspect()
     |> Chartkick.line_chart(min: 5, max: 30)
   end
-
-  # data
-  # |> Enum.map(fn %{round: round, disposals: disposals} ->
-  #   {"Round #{round}", disposals}
-  # end)
-  # |> Enum.into(%{})
-  # |> Jason.encode!()
-  # |> IO.inspect()
-  # |> Chartkick.line_chart()
 end

@@ -15,20 +15,22 @@ defmodule PlayerStats.Crawler.Scraper do
          {:ok, team_season_a} <- find_or_create_team_season(html, 1),
          {:ok, team_season_b} <- find_or_create_team_season(html, 2),
          {:ok, game} <- find_or_create_game(html, url),
+         [table_a, table_b] <- find_team_tables(html),
          :ok <-
-           save_team_data(html, "center > table:nth-of-type(3)", %{
+           save_team_data(table_a, %{
              team_season: team_season_a,
              game: game
            }),
          :ok <-
-           save_team_data(html, "center > table:nth-of-type(5)", %{
+           save_team_data(table_b, %{
              team_season: team_season_b,
              game: game
            }),
          {:ok, _db_page} <- mark_page_scraped(db_page) do
       {:ok, page}
     else
-      _wtf ->
+      wtf ->
+        IO.inspect(wtf, label: "wtf")
         {:ok, page}
     end
   end
@@ -37,8 +39,7 @@ defmodule PlayerStats.Crawler.Scraper do
     {:ok, page}
   end
 
-  defp save_team_data(html, selector, %{team_season: team_season, game: game}) do
-    team_table = Floki.find(html, selector)
+  defp save_team_data(team_table, %{team_season: team_season, game: game}) do
     header = header_row(team_table)
 
     1..23
@@ -226,7 +227,7 @@ defmodule PlayerStats.Crawler.Scraper do
   defp find_or_create_game(html, url) do
     page_id =
       url
-      |> String.split(current_year_as_string())
+      |> String.split("/#{current_year_as_string()}/")
       |> List.last()
 
     %{"game_id" => game_id} = Regex.named_captures(~r/(?<game_id>\d+)/, page_id)
@@ -239,7 +240,8 @@ defmodule PlayerStats.Crawler.Scraper do
         |> PlayerStats.Schema.Game.changeset(%{
           external_id: game_id,
           played_at: find_played_at(html),
-          round: find_round(html)
+          round: find_round(html),
+          season_id: find_season().id
         })
         |> PlayerStats.Repo.insert()
 
@@ -265,10 +267,18 @@ defmodule PlayerStats.Crawler.Scraper do
       |> Floki.text()
 
     %{"played_at" => played_at} =
-      Regex.named_captures(~r/(?<=Date:).+(?<played_at>\d\d-[a-zA-Z]+\-\d+)/, row)
+      Regex.named_captures(~r/(?<=Date:)\D+(?<played_at>\d{1,2}\-[a-zA-Z]+\-\d+)/, row)
 
     played_at
-    |> Timex.parse!("%d-%b-%Y", :strftime)
+    |> Timex.parse("%d-%b-%Y", :strftime)
+    |> case do
+      {:error, _} ->
+        ("0" <> played_at)
+        |> Timex.parse!("%d-%b-%Y", :strftime)
+
+      {:ok, datetime} ->
+        datetime
+    end
   end
 
   defp find_round(html) do
@@ -300,5 +310,16 @@ defmodule PlayerStats.Crawler.Scraper do
     db_page
     |> change(scraped: true)
     |> Repo.update()
+  end
+
+  defp find_team_tables(html) do
+    html
+    |> Floki.find("center > table")
+    |> Enum.filter(fn table ->
+      table
+      |> Floki.find("thead")
+      |> Floki.text()
+      |> String.contains?("Match Statistics")
+    end)
   end
 end

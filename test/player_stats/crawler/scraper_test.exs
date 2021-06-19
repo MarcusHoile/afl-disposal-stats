@@ -23,6 +23,18 @@ defmodule PlayerStats.Crawler.ScraperTest do
       assert Repo.aggregate(Schema.Player, :count, :id) == 46
     end
 
+    test "saves game", %{page: page} do
+      {:ok, %Page{}} = Scraper.scrape(page)
+
+      assert Repo.aggregate(Schema.Team, :count, :id) == 18
+
+      assert %{
+               external_id: "031420210318",
+               played_at: ~U[2021-03-18 00:00:00Z],
+               round: 1
+             } = Repo.one(Schema.Game)
+    end
+
     test "saves each team_season we have not seen before", %{page: page} do
       season = insert!(:season)
       team = Repo.get_by!(Schema.Team, name: "Richmond Tigers")

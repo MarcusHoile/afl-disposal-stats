@@ -24,7 +24,7 @@ defmodule PlayerStats.Data do
       on: ps.season_id == ^season_id,
       where: gp.player_id == ^player_id,
       select: %{
-        round: g.round,
+        played_at: g.played_at,
         disposals: gp.disposals
       }
     )

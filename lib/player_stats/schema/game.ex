@@ -17,7 +17,8 @@ defmodule PlayerStats.Schema.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:external_id, :played_at, :round])
-    |> validate_required([:external_id, :played_at, :round])
+    |> cast(attrs, [:external_id, :played_at, :round, :season_id])
+    |> validate_required([:external_id, :played_at, :round, :season_id])
+    |> assoc_constraint(:season)
   end
 end
