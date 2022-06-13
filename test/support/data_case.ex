@@ -18,26 +18,29 @@ defmodule PlayerStats.DataCase do
 
   using do
     quote do
-      alias PlayerStats.{Repo, Schema}
+      alias PlayerStats.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import PlayerStats.DataCase
       import PlayerStats.Factory
+      alias PlayerStats.Schema
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(PlayerStats.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(PlayerStats.Repo, {:shared, self()})
-    end
-
+    PlayerStats.DataCase.setup_sandbox(tags)
     PlayerStats.Seeds.insert_teams!()
-
     :ok
+  end
+
+  @doc """
+  Sets up the sandbox based on the test tags.
+  """
+  def setup_sandbox(tags) do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(PlayerStats.Repo, shared: not tags[:async])
+    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
   end
 
   @doc """

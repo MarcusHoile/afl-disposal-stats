@@ -11,10 +11,11 @@ defmodule PlayerStats.Crawler.Scraper do
       ) do
     {:ok, html} = Floki.parse_document(body)
 
-    with {:ok, db_page} <- find_or_create_page(url),
-         {:ok, team_season_a} <- find_or_create_team_season(html, 1),
-         {:ok, team_season_b} <- find_or_create_team_season(html, 2),
-         {:ok, game} <- find_or_create_game(html, url),
+    with current_year <- get_current_year(url),
+         {:ok, db_page} <- find_or_create_page(url),
+         {:ok, team_season_a} <- find_or_create_team_season(html, current_year, 1),
+         {:ok, team_season_b} <- find_or_create_team_season(html, current_year, 2),
+         {:ok, game} <- find_or_create_game(html, current_year, url),
          [table_a, table_b] <- find_team_tables(html),
          :ok <-
            save_team_data(table_a, %{
@@ -37,6 +38,13 @@ defmodule PlayerStats.Crawler.Scraper do
 
   def scrape(page) do
     {:ok, page}
+  end
+
+  defp get_current_year("https://afltables.com/afl/stats/games/" <> path) do
+    path
+    |> String.split("/")
+    |> List.first()
+    |> String.to_integer()
   end
 
   defp save_team_data(team_table, %{team_season: team_season, game: game}) do
@@ -133,19 +141,19 @@ defmodule PlayerStats.Crawler.Scraper do
     Application.get_env(:player_stats, :legend)
   end
 
-  defp find_season do
+  defp find_season(current_year) do
     PlayerStats.Schema.Season
-    |> PlayerStats.Repo.get_by(year: current_year())
+    |> PlayerStats.Repo.get_by(year: current_year)
     |> case do
       nil ->
-        PlayerStats.Repo.insert!(%PlayerStats.Schema.Season{year: current_year()})
+        PlayerStats.Repo.insert!(%PlayerStats.Schema.Season{year: current_year})
 
       season ->
         season
     end
   end
 
-  defp find_or_create_team_season(html, n) do
+  defp find_or_create_team_season(html, current_year, n) do
     team_name =
       html
       |> Floki.find("table:first-of-type")
@@ -155,7 +163,7 @@ defmodule PlayerStats.Crawler.Scraper do
 
     from(t in PlayerStats.Schema.Team,
       where: like(t.name, ^"%#{team_name}%"),
-      preload: [team_seasons: ^team_seasons_query()],
+      preload: [team_seasons: ^team_seasons_query(current_year)],
       limit: 1
     )
     |> PlayerStats.Repo.one()
@@ -164,7 +172,7 @@ defmodule PlayerStats.Crawler.Scraper do
         {:ok, team_season}
 
       %{id: team_id} ->
-        %PlayerStats.Schema.TeamSeason{team_id: team_id, season_id: find_season().id}
+        %PlayerStats.Schema.TeamSeason{team_id: team_id, season_id: find_season(current_year).id}
         |> PlayerStats.Repo.insert()
     end
   end
@@ -217,17 +225,17 @@ defmodule PlayerStats.Crawler.Scraper do
     |> PlayerStats.Repo.insert()
   end
 
-  defp team_seasons_query do
+  defp team_seasons_query(current_year) do
     from(ts in PlayerStats.Schema.TeamSeason,
       join: s in assoc(ts, :season),
-      on: s.year == ^current_year()
+      on: s.year == ^current_year
     )
   end
 
-  defp find_or_create_game(html, url) do
+  defp find_or_create_game(html, current_year, url) do
     page_id =
       url
-      |> String.split("/#{current_year_as_string()}/")
+      |> String.split("/#{current_year}/")
       |> List.last()
 
     %{"game_id" => game_id} = Regex.named_captures(~r/(?<game_id>\d+)/, page_id)
@@ -241,22 +249,13 @@ defmodule PlayerStats.Crawler.Scraper do
           external_id: game_id,
           played_at: find_played_at(html),
           round: find_round(html),
-          season_id: find_season().id
+          season_id: find_season(current_year).id
         })
         |> PlayerStats.Repo.insert()
 
       game ->
         {:ok, game}
     end
-  end
-
-  defp current_year do
-    Date.utc_today().year()
-  end
-
-  defp current_year_as_string do
-    current_year()
-    |> Integer.to_string()
   end
 
   defp find_played_at(html) do

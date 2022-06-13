@@ -7,12 +7,8 @@ defmodule PlayerStatsWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_player_stats_key",
-    signing_salt: "cths+JrB"
+    signing_salt: "4sxyIiyC"
   ]
-
-  socket "/socket", PlayerStatsWeb.UserSocket,
-    websocket: true,
-    longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
@@ -24,7 +20,7 @@ defmodule PlayerStatsWeb.Endpoint do
     at: "/",
     from: :player_stats,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(assets fonts images favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
