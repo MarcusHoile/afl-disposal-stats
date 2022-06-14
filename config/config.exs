@@ -7,11 +7,10 @@
 # General application configuration
 import Config
 
-config :chartkick, json_serializer: Jason
-
 config :crawler, root_url: "https://afltables.com/afl/seas/2021.html"
 
 config :player_stats,
+  current_year: 2021,
   ecto_repos: [PlayerStats.Repo],
   legend: %{
     "#" => "guernsey_number",

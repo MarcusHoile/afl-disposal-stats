@@ -1,4 +1,7 @@
 defmodule PlayerStats.Schema.PlayerSeason do
+  @moduledoc """
+  Schema for a player season
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias PlayerStats.Schema
@@ -10,6 +13,8 @@ defmodule PlayerStats.Schema.PlayerSeason do
     belongs_to :season, Schema.Season
     belongs_to :team, Schema.Team
     belongs_to :team_season, Schema.TeamSeason
+
+    has_many :game_players, Schema.GamePlayer
 
     timestamps()
   end

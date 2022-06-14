@@ -34,8 +34,8 @@ defmodule PlayerStats.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:chartkick, "~> 0.3"},
       {:crawler, "~> 1.1.1"},
+      {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
       {:floki, ">= 0.30.0"},
