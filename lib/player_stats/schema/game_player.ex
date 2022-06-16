@@ -1,4 +1,7 @@
 defmodule PlayerStats.Schema.GamePlayer do
+  @moduledoc """
+  Schema for a game player
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -9,9 +12,15 @@ defmodule PlayerStats.Schema.GamePlayer do
     field :goals, :integer, default: 0
     field :stats, :map
 
+    field :avg_disposals, :integer, virtual: true
+    field :min_disposals, :integer, virtual: true
+
     belongs_to :game, PlayerStats.Schema.Game
     belongs_to :player, PlayerStats.Schema.Player
     belongs_to :player_season, PlayerStats.Schema.PlayerSeason
+
+    has_one :team_season, through: [:player_season, :team_season]
+    has_one :team, through: [:team_season, :team]
 
     timestamps()
   end

@@ -1,7 +1,24 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
-</section>
-
 <section class="row">
+  <table>
+    <thead>
+      <tr>
+        <th>Avg Disposals</th>
+        <th>Min Disposals</th>
+        <th>Team</th>
+        <th>First</th>
+        <th>Last</th>
+      </tr>
+    </thead>
+    <tbody>
+  <%= for game_player <- @data do %>
+    <tr>
+      <td><%= Decimal.to_float(game_player.avg_disposals) %></td>
+      <td><%= game_player.min_disposals %></td>
+      <td><%= game_player.team_name %></td>
+      <td><%= game_player.first_name %></td>
+      <td><%= game_player.last_name %></td>
+    </tr>
+  <% end %>
+    </tbody>
+  </table>
 </section>

@@ -22,6 +22,11 @@ defmodule PlayerStats.Data do
     )
     |> game_player_filter(filter)
     |> team_filter(filter)
+    |> select([gp: gp, game_player: game_player], %{
+      game_player
+      | avg_disposals: gp.avg_disposals,
+        min_disposals: gp.min_disposals
+    })
   end
 
   defp game_player_filter(query, filter) do
@@ -38,13 +43,15 @@ defmodule PlayerStats.Data do
         select: %{
           player_id: gp.player_id,
           game_count: count(gp.id),
-          min_disposals: min(gp.disposals)
+          min_disposals: min(gp.disposals),
+          avg_disposals: avg(gp.disposals)
         },
         group_by: gp.player_id
       )
 
     query
     |> join(:inner, [game_player: gp], gp2 in subquery(subquery),
+      as: :gp,
       on:
         gp2.player_id == gp.player_id and
           gp2.game_count == ^length(rounds) and
@@ -53,26 +60,15 @@ defmodule PlayerStats.Data do
   end
 
   defp team_filter(query, filter) do
-    if Keyword.has_key?(filter, :teams) do
-      team_ids = Keyword.get(filter, :teams) |> Enum.map(& &1.id)
+    filter
+    |> Keyword.get(:team_ids)
+    |> case do
+      [] ->
+        query
 
-      query
-      |> where([team_season: ts], ts.team_id in ^team_ids)
-    else
-      query
+      team_ids ->
+        where(query, [team_season: ts], ts.team_id in ^team_ids)
     end
-  end
-
-  def players do
-    teams = Schema.Team |> first() |> Repo.all()
-    disposal_count = 25
-
-    game_players(teams: teams, disposal_count: disposal_count)
-    |> Repo.all()
-    |> Repo.preload(:player)
-    |> Enum.map(fn %{player: %{first_name: first_name, last_name: last_name}} ->
-      [first_name, last_name]
-    end)
   end
 
   defp current_year do
