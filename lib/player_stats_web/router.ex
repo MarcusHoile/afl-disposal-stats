@@ -17,7 +17,7 @@ defmodule PlayerStatsWeb.Router do
   scope "/", PlayerStatsWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    live "/", PlayerStatLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

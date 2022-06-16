@@ -13,6 +13,7 @@ defmodule PlayerStats.Schema.GamePlayer do
     field :stats, :map
 
     field :avg_disposals, :integer, virtual: true
+    field :max_disposals, :integer, virtual: true
     field :min_disposals, :integer, virtual: true
 
     belongs_to :game, PlayerStats.Schema.Game

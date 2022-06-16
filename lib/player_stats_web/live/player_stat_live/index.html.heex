@@ -1,0 +1,33 @@
+<h1>Stats</h1>
+
+<h2> Filter </h2>
+<%= for {filter, value} <- @filter do %>
+<p><%= filter %>: <%= inspect(value) %></p>
+<% end %>
+
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3">Disposals</th>
+      <th colspan="3"></th>
+    </tr>
+    <tr>
+      <th>Avg</th>
+      <th>Min</th>
+      <th colspan="4">Max</th>
+    </tr>
+  </thead>
+  <tbody id="stats">
+    <%= for player_stat <- @stats do %>
+      <tr id={"player_stat-#{player_stat.id}"}>
+        <td><%= Decimal.round(player_stat.avg_disposals) %></td>
+        <td><%= player_stat.min_disposals %></td>
+        <td><%= player_stat.max_disposals %></td>
+        <td><%= player_stat.team.name %></td>
+        <td><%= player_stat.player.first_name %></td>
+        <td><%= player_stat.player.last_name %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

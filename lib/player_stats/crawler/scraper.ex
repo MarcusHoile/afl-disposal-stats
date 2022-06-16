@@ -1,8 +1,12 @@
 defmodule PlayerStats.Crawler.Scraper do
+  @moduledoc """
+  Scrapers be scraping
+  """
   @behaviour Crawler.Scraper.Spec
-  alias Crawler.Store.Page
-  import Ecto.Query, only: [from: 2]
   import Ecto.Changeset
+  import Ecto.Query, only: [from: 2]
+  require Logger
+  alias Crawler.Store.Page
   alias PlayerStats.{Repo, Schema}
 
   def scrape(
@@ -31,7 +35,7 @@ defmodule PlayerStats.Crawler.Scraper do
       {:ok, page}
     else
       wtf ->
-        IO.inspect(wtf, label: "wtf")
+        Logger.error(wtf: wtf)
         {:ok, page}
     end
   end
