@@ -40,9 +40,17 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     end)
   end
 
+  def filter_value(value) when is_list(value) do
+    Enum.join(value, ",")
+  end
+
+  def filter_value(value), do: value
+
   defp default_params do
     %{
-      "current_year" => default_year()
+      "current_year" => default_year(),
+      "min_disposals" => 15,
+      "max_avg_disposals" => 30
     }
   end
 

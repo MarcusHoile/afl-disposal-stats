@@ -1,5 +1,5 @@
 defmodule PlayerStats.Crawler do
-  def crawl(url \\ "https://afltables.com/afl/seas/2021.html", _opts \\ []) do
+  def crawl(url \\ "https://afltables.com/afl/seas/2022.html", _opts \\ []) do
     Crawler.crawl(url,
       interval: 1_000,
       url_filter: PlayerStats.Crawler.UrlFilter,

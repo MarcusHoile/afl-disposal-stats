@@ -2,7 +2,7 @@
 
 <h2> Filter </h2>
 <%= for {filter, value} <- @filter do %>
-<p><%= filter %>: <%= inspect(value) %></p>
+<p><%= filter %>: <%= filter_value(value) %></p>
 <% end %>
 
 
