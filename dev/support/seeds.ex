@@ -1,12 +1,12 @@
 defmodule PlayerStats.Seeds do
-  def insert! do
+  def insert do
     insert_teams!()
     insert_season!()
 
   end
 
   defp insert_season! do
-    PlayerStats.Repo.insert!(%PlayerStats.Schema.Season{year: 2021})
+    PlayerStats.Repo.insert(%PlayerStats.Schema.Season{year: 2021})
   end
 
   def insert_teams! do
@@ -32,6 +32,6 @@ defmodule PlayerStats.Seeds do
     ]
 
     teams
-    |> Enum.each(&PlayerStats.Repo.insert!(%PlayerStats.Schema.Team{name: &1}))
+    |> Enum.each(&PlayerStats.Repo.insert(%PlayerStats.Schema.Team{name: &1}))
   end
 end

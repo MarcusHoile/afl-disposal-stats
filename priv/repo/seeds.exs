@@ -5,9 +5,9 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     PlayerStats.Repo.insert!(%PlayerStats.SomeSchema{})
+#     PlayerStats.Repo.insert(%PlayerStats.SomeSchema{})
 #
-# We recommend using the bang functions (`insert!`, `update!`
+# We recommend using the bang functions (`insert`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-PlayerStats.Seeds.insert!()
+PlayerStats.Seeds.insert()

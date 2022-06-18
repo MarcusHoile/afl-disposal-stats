@@ -36,9 +36,9 @@ defmodule PlayerStats.Crawler.ScraperTest do
     end
 
     test "saves each team_season we have not seen before", %{page: page} do
-      season = insert!(:season)
+      season = build(:season)
       team = Repo.get_by!(Schema.Team, name: "Richmond Tigers")
-      insert!(:team_season, season_id: season.id, team_id: team.id)
+      insert(:team_season, season: season, team: team)
 
       {:ok, %Page{}} = Scraper.scrape(page)
 
@@ -47,16 +47,16 @@ defmodule PlayerStats.Crawler.ScraperTest do
     end
 
     test "saves each player_season we have not seen before", %{page: page} do
-      player = insert!(:player, first_name: "Jack", last_name: "Graham")
-      season = insert!(:season)
+      player = insert(:player, first_name: "Jack", last_name: "Graham")
+      season = build(:season)
       team = Repo.get_by!(Schema.Team, name: "Richmond Tigers")
-      team_season = insert!(:team_season, season_id: season.id, team_id: team.id)
+      team_season = insert(:team_season, season: season, team: team)
 
-      insert!(:player_season,
-        season_id: season.id,
-        team_id: team.id,
-        team_season_id: team_season.id,
-        player_id: player.id,
+      insert(:player_season,
+        season: team_season.season,
+        team: team,
+        team_season: team_season,
+        player: player,
         guernsey_number: 34
       )
 
@@ -129,7 +129,7 @@ defmodule PlayerStats.Crawler.ScraperTest do
     end
 
     test "does not create a new page if one already exists", %{page: %{url: url} = page} do
-      insert!(:page, url: url)
+      insert(:page, url: url)
       {:ok, %Page{}} = Scraper.scrape(page)
 
       assert %{url: "https://afltables.com/afl/stats/games/2021/031420210318.html", scraped: true} =

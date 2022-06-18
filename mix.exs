@@ -38,6 +38,7 @@ defmodule PlayerStats.MixProject do
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.6"},
       {:esbuild, "~> 0.4", runtime: Mix.env() == :dev},
+      {:ex_machina, "~> 2.7.0"},
       {:floki, ">= 0.30.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},

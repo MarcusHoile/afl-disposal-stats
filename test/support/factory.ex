@@ -1,39 +1,33 @@
 defmodule PlayerStats.Factory do
-  alias PlayerStats.{Repo, Schema}
+  alias PlayerStats.Schema
+  use ExMachina.Ecto, repo: PlayerStats.Repo
 
   # Factories
 
-  def build(:page) do
+  def page_factory do
     %Schema.Page{scraped: false, url: "http://example.com/path/to/page"}
   end
 
-  def build(:player) do
+  def player_factory do
     %Schema.Player{first_name: "Liam", last_name: "Ryan"}
   end
 
-  def build(:team) do
+  def team_factory do
     %Schema.Team{name: "West Coast Eagles"}
   end
 
-  def build(:season) do
+  def season_factory do
     %Schema.Season{year: 2021}
   end
 
-  def build(:player_season) do
-    %Schema.PlayerSeason{guernsey_number: "3"}
+  def player_season_factory do
+    %Schema.PlayerSeason{guernsey_number: "3", player: build(:player), season: build(:season)}
   end
 
-  def build(:team_season) do
-    %Schema.TeamSeason{}
-  end
-
-  # Convenience API
-
-  def build(factory_name, attributes) do
-    factory_name |> build() |> struct!(attributes)
-  end
-
-  def insert!(factory_name, attributes \\ []) do
-    factory_name |> build(attributes) |> Repo.insert!()
+  def team_season_factory do
+    %Schema.TeamSeason{
+      team: build(:team),
+      season: build(:season)
+    }
   end
 end
