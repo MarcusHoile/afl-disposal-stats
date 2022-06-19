@@ -221,9 +221,8 @@ defmodule PlayerStats.Crawler.Scraper do
     |> PlayerStats.Repo.insert!()
   end
 
-  defp create_player_season(%{id: player_id}, %{id: team_season_id} = team_season, player_data) do
+  defp create_player_season(%{id: player_id}, %{id: team_season_id}, player_data) do
     %PlayerStats.Schema.PlayerSeason{player_id: player_id}
-    |> change(Map.take(team_season, [:team_id, :season_id]))
     |> change(team_season_id: team_season_id)
     |> PlayerStats.Schema.PlayerSeason.changeset(player_data)
     |> PlayerStats.Repo.insert()

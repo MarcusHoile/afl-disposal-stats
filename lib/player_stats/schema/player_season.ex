@@ -10,8 +10,6 @@ defmodule PlayerStats.Schema.PlayerSeason do
     field :guernsey_number, :integer
 
     belongs_to :player, Schema.Player
-    belongs_to :season, Schema.Season
-    belongs_to :team, Schema.Team
     belongs_to :team_season, Schema.TeamSeason
 
     has_many :game_players, Schema.GamePlayer

@@ -31,7 +31,6 @@ defmodule PlayerStats.DataCase do
 
   setup tags do
     PlayerStats.DataCase.setup_sandbox(tags)
-    PlayerStats.Seeds.insert_teams!()
     :ok
   end
 

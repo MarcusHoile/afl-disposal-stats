@@ -6,6 +6,7 @@ defmodule PlayerStats.Crawler.ScraperTest do
 
   describe "scrape/1" do
     setup do
+      PlayerStats.Seeds.insert_teams!()
       body = File.read!("test/support/fixtures/match_stats.html.text")
 
       page = %Page{
@@ -53,8 +54,6 @@ defmodule PlayerStats.Crawler.ScraperTest do
       team_season = insert(:team_season, season: season, team: team)
 
       insert(:player_season,
-        season: team_season.season,
-        team: team,
         team_season: team_season,
         player: player,
         guernsey_number: 34

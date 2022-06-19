@@ -12,10 +12,6 @@ defmodule PlayerStats.Schema.GamePlayer do
     field :goals, :integer, default: 0
     field :stats, :map
 
-    field :avg_disposals, :integer, virtual: true
-    field :max_disposals, :integer, virtual: true
-    field :min_disposals, :integer, virtual: true
-
     belongs_to :game, PlayerStats.Schema.Game
     belongs_to :player, PlayerStats.Schema.Player
     belongs_to :player_season, PlayerStats.Schema.PlayerSeason

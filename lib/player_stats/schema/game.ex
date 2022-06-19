@@ -9,6 +9,7 @@ defmodule PlayerStats.Schema.Game do
     belongs_to :season, PlayerStats.Schema.Season
 
     has_many :game_players, PlayerStats.Schema.GamePlayer
+
     many_to_many(:teams, PlayerStats.Schema.Team, join_through: "game_teams")
 
     timestamps()
