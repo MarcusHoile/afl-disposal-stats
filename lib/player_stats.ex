@@ -3,82 +3,39 @@ defmodule PlayerStats do
   import Ecto.Query
   alias PlayerStats.{Repo, Schema}
 
-  def list_game_players(%PlayerStats.Filter{current_year: current_year} = filter) do
-    from(gp in Schema.GamePlayer,
-      as: :game_player,
-      join: g in assoc(gp, :game),
-      as: :game,
-      join: ps in assoc(gp, :player_season),
-      join: ts in assoc(ps, :team_season),
-      as: :team_season,
-      join: s in assoc(ts, :season),
-      on: s.year == ^current_year,
-      distinct: gp.player_id
-    )
-    |> round_filter(filter)
-    |> game_player_filter(filter)
-    |> team_filter(filter)
-    |> select([gp: gp, game_player: game_player], %{
-      game_player
-      | avg_disposals: gp.avg_disposals,
-        min_disposals: gp.min_disposals,
-        max_disposals: gp.max_disposals
-    })
+  def list_players(%PlayerStats.Filter{team_ids: [t1, t2]} = filter) do
+    t1
+    |> team_list_players(filter)
+    |> union_all(^team_list_players(t2, filter))
+    |> Repo.all()
+  end
+
+  def list_players(%PlayerStats.Filter{team_ids: [team_id]} = filter) do
+    team_id
+    |> team_list_players(filter)
     |> Repo.all()
   end
 
   def list_game_players(_), do: []
 
-  defp round_filter(query, %{rounds: []}), do: query
-
-  defp round_filter(query, %{rounds: rounds}) do
-    where(query, [game: g], g.round in ^rounds)
-  end
-
-  defp game_player_filter(query, %{min_disposals: min_disposals, rounds: []}) do
-    query
-    |> join(:inner, [game_player: gp], gp2 in subquery(game_player_subquery()),
-      as: :gp,
-      on: gp2.player_id == gp.player_id and gp2.min_disposals >= ^min_disposals
+  defp team_list_players(team_id, filter) do
+    from(p in Schema.Player,
+      join: gp in assoc(p, :game_players),
+      where: gp.game_id in subquery(game_query(team_id, filter)),
+      preload: [game_players: gp]
     )
   end
 
-  defp game_player_filter(query, %{min_disposals: min_disposals, rounds: rounds} = filter) do
-    subquery =
-      game_player_subquery()
-      |> round_filter(filter)
-
-    query
-    |> join(:inner, [game_player: gp], gp2 in subquery(subquery),
-      as: :gp,
-      on:
-        gp2.player_id == gp.player_id and
-          gp2.game_count == ^length(rounds) and
-          gp2.min_disposals >= ^min_disposals
+  defp game_query(team_id, %{current_year: current_year, rounds: rounds}) do
+    from(g in Schema.Game,
+      join: t in assoc(g, :teams),
+      join: s in assoc(g, :season),
+      where: t.id == ^team_id,
+      group_by: [g.id, t.id],
+      limit: ^rounds,
+      order_by: [desc: g.round],
+      select: g.id,
+      where: s.year == ^current_year
     )
-  end
-
-  defp game_player_subquery do
-    from(gp in Schema.GamePlayer,
-      join: g in assoc(gp, :game),
-      as: :game,
-      join: ps in assoc(gp, :player_season),
-      join: ts in assoc(ps, :team_season),
-      as: :team_season,
-      select: %{
-        player_id: gp.player_id,
-        game_count: count(gp.id),
-        min_disposals: min(gp.disposals),
-        max_disposals: max(gp.disposals),
-        avg_disposals: avg(gp.disposals)
-      },
-      group_by: gp.player_id
-    )
-  end
-
-  defp team_filter(query, %{team_ids: []}), do: query
-
-  defp team_filter(query, %{team_ids: team_ids}) do
-    where(query, [team_season: ts], ts.team_id in ^team_ids)
   end
 end

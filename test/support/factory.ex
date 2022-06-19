@@ -72,11 +72,15 @@ defmodule PlayerStats.Factory do
     }
   end
 
-  def with_game_player(player_season) do
+  def with_game_player(player_season, opts \\ []) do
     team = player_season.team_season.team
     season = player_season.team_season.season
     game = build(:game, teams: [team], season: season)
-    insert(:game_player, game: game, player_season: player_season, player: player_season.player)
+
+    attrs =
+      Keyword.merge(opts, game: game, player_season: player_season, player: player_season.player)
+
+    insert(:game_player, attrs)
     player_season
   end
 end
