@@ -26,7 +26,7 @@ defmodule PlayerStats.Factory do
   end
 
   def player_factory do
-    %Schema.Player{first_name: "Liam", last_name: "Ryan"}
+    %Schema.Player{first_name: sequence("Liam"), last_name: sequence("Ryan")}
   end
 
   def player_season_factory do
