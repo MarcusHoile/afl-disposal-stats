@@ -20,6 +20,7 @@ defmodule PlayerStats.Crawler.Scraper do
          {:ok, team_season_a} <- find_or_create_team_season(html, current_year, 1),
          {:ok, team_season_b} <- find_or_create_team_season(html, current_year, 2),
          {:ok, game} <- find_or_create_game(html, current_year, url),
+         {:ok, game} <- save_game_teams(game, team_season_a, team_season_b),
          [table_a, table_b] <- find_team_tables(html),
          :ok <-
            save_team_data(table_a, %{
@@ -323,5 +324,17 @@ defmodule PlayerStats.Crawler.Scraper do
       |> Floki.text()
       |> String.contains?("Match Statistics")
     end)
+  end
+
+  defp save_game_teams(game, team_season_a, team_season_b) do
+    teams =
+      from(t in Schema.Team, where: t.id in ^[team_season_a.team_id, team_season_b.team_id])
+      |> Repo.all()
+
+    game
+    |> Repo.preload(:teams)
+    |> change()
+    |> Ecto.Changeset.put_assoc(:teams, teams)
+    |> Repo.update()
   end
 end
