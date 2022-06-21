@@ -24,6 +24,32 @@ defmodule PlayerStatsTest do
              ] = PlayerStats.list_players(filter)
     end
 
+    test "ignores players of opposition team" do
+      season = insert(:season)
+      player_season = insert(:player_season, team_season: build(:team_season, season: season))
+
+      other_player_season = insert(:player_season, team_season: build(:team_season, season: season))
+
+      insert(:game, season: season, teams: [player_season.team_season.team, other_player_season.team_season.team])
+
+      player_season |> with_game_player(disposals: 4)
+
+      other_player_season |> with_game_player(disposals: 3)
+
+      filter = %PlayerStats.Filter{
+        current_year: 2021,
+        team_ids: [player_season.team_season.team_id]
+      }
+
+      assert [
+               %Player{
+                 avg_disposals: 4.0,
+                 max_disposals: 4,
+                 min_disposals: 4
+               }
+             ] = PlayerStats.list_players(filter)
+    end
+
     test "filters players by two teams" do
       ps1 =
         :player_season

@@ -16,31 +16,33 @@ defmodule PlayerStats do
     |> Repo.all()
   end
 
-  def list_game_players(_), do: []
+  def list_players(%PlayerStats.Filter{team_ids: []}), do: []
 
   defp team_list_players(team_id, filter) do
     from(p in Schema.Player,
       join: gp in assoc(p, :game_players),
-      join: g in subquery(game_query(team_id, filter)),
-      group_by: p.id,
+      join: t in assoc(gp, :team),
+      join: g in subquery(game_query(filter)),
+      group_by: [p.id, t.id],
       distinct: true,
       order_by: {:desc, fragment("avg_disposals")},
+      where: t.id == ^team_id,
       select: %{
         p
         | avg_disposals: fragment("?::float as avg_disposals", avg(gp.disposals)),
+          current_team: t,
           min_disposals: min(gp.disposals),
           max_disposals: max(gp.disposals)
       }
     )
   end
 
-  defp game_query(team_id, %{current_year: current_year, rounds: rounds}) do
+  defp game_query(%{current_year: current_year, rounds: rounds}) do
     from(g in Schema.Game,
       join: t in assoc(g, :teams),
       join: s in assoc(g, :season),
       limit: ^rounds,
       order_by: [desc: g.round],
-      where: t.id == ^team_id,
       where: s.year == ^current_year
     )
   end

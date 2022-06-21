@@ -11,6 +11,7 @@ defmodule PlayerStats.Schema.Player do
     field :last_name, :string
 
     field :avg_disposals, :integer, virtual: true
+    has_one :current_team, Schema.Team
     field :min_disposals, :integer, virtual: true
     field :max_disposals, :integer, virtual: true
 

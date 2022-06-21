@@ -75,7 +75,7 @@ defmodule PlayerStats.Factory do
   def with_game_player(player_season, opts \\ []) do
     team = player_season.team_season.team
     season = player_season.team_season.season
-    game = build(:game, teams: [team], season: season)
+    game = Keyword.get(opts, :game, build(:game, teams: [team], season: season))
 
     attrs =
       Keyword.merge(opts, game: game, player_season: player_season, player: player_season.player)

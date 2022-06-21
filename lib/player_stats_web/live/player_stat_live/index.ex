@@ -2,8 +2,6 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   @moduledoc false
   use PlayerStatsWeb, :live_view
 
-  alias PlayerStats.Repo
-
   @impl true
   def mount(params, _session, socket) do
     params = Map.merge(default_params(), params)
@@ -24,9 +22,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp list_stats(params) do
     params
     |> PlayerStats.Filter.build!()
-    |> PlayerStats.list_game_players()
-    |> Repo.preload([:player, :team])
-    |> Enum.sort_by(&Decimal.round(&1.avg_disposals), &>=/2)
+    |> PlayerStats.list_players()
   end
 
   defp filter(params) do
@@ -38,6 +34,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       {_k, nil} -> true
       {_k, _v} -> false
     end)
+    |> Enum.into(%{})
   end
 
   def filter_value(value) when is_list(value) do
