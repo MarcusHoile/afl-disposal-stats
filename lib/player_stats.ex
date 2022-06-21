@@ -24,9 +24,10 @@ defmodule PlayerStats do
       join: g in subquery(game_query(team_id, filter)),
       group_by: p.id,
       distinct: true,
+      order_by: {:desc, fragment("avg_disposals")},
       select: %{
         p
-        | avg_disposals: fragment("?::float", avg(gp.disposals)),
+        | avg_disposals: fragment("?::float as avg_disposals", avg(gp.disposals)),
           min_disposals: min(gp.disposals),
           max_disposals: max(gp.disposals)
       }
