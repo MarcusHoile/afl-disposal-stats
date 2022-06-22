@@ -28,13 +28,40 @@ defmodule PlayerStats do
       order_by: {:desc, fragment("avg_disposals")},
       where: t.id == ^team_id,
       select: %{
-        p
-        | avg_disposals: fragment("?::float as avg_disposals", avg(gp.disposals)),
-          current_team: t,
-          min_disposals: min(gp.disposals),
-          max_disposals: max(gp.disposals)
+        first_name: p.first_name,
+        last_name: p.last_name,
+        avg_disposals: fragment("?::float as avg_disposals", avg(gp.disposals)),
+        team_name: t.name,
+        min_disposals: min(gp.disposals),
+        max_disposals: max(gp.disposals)
       }
     )
+    |> max_avg_disposals_filter(filter)
+    |> min_disposals_filter(filter)
+  end
+
+  defp min_disposals_filter(query, %{min_disposals: min_disposals}) do
+    subquery =
+      from(gp in Schema.GamePlayer,
+        group_by: gp.player_id,
+        select: %{player_id: gp.player_id, disposals: min(gp.disposals)}
+      )
+
+    query
+    |> join(:inner, [p], gp in subquery(subquery), on: gp.player_id == p.id and gp.disposals >= ^min_disposals)
+  end
+
+  defp max_avg_disposals_filter(query, %{max_avg_disposals: nil}), do: query
+
+  defp max_avg_disposals_filter(query, %{max_avg_disposals: max_avg_disposals}) do
+    subquery =
+      from(gp in Schema.GamePlayer,
+        group_by: gp.player_id,
+        select: %{player_id: gp.player_id, disposals: avg(gp.disposals)}
+      )
+
+    query
+    |> join(:inner, [p], gp in subquery(subquery), on: gp.player_id == p.id and gp.disposals <= ^max_avg_disposals)
   end
 
   defp game_query(%{current_year: current_year, rounds: rounds}) do

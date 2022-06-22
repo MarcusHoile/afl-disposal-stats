@@ -1,6 +1,5 @@
 defmodule PlayerStatsTest do
   use PlayerStats.DataCase
-  alias PlayerStats.Schema.Player
 
   describe "list_players/1" do
     test "filters players by single team" do
@@ -16,12 +15,29 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %Player{
+               %{
                  avg_disposals: 3.5,
+                 first_name: _,
+                 last_name: _,
                  max_disposals: 4,
                  min_disposals: 3
                }
              ] = PlayerStats.list_players(filter)
+    end
+
+    test "filters players by min_disposals" do
+      player_season =
+        :player_season
+        |> insert()
+        |> with_game_player(disposals: 4)
+
+      filter = %PlayerStats.Filter{
+        current_year: 2021,
+        min_disposals: 5,
+        team_ids: [player_season.team_season.team_id]
+      }
+
+      assert [] = PlayerStats.list_players(filter)
     end
 
     test "ignores players of opposition team" do
@@ -42,7 +58,7 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %Player{
+               %{
                  avg_disposals: 4.0,
                  max_disposals: 4,
                  min_disposals: 4
@@ -69,12 +85,12 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %Player{
+               %{
                  avg_disposals: 4.0,
                  max_disposals: 4,
                  min_disposals: 4
                },
-               %Player{
+               %{
                  avg_disposals: 3.0,
                  max_disposals: 3,
                  min_disposals: 3
@@ -83,15 +99,23 @@ defmodule PlayerStatsTest do
     end
 
     @tag :skip
-    test "error, when no team filter" do
+    test "empty result, when no team filter" do
     end
 
-    @tag :skip
-    test "filters players by min_disposals" do
-    end
-
-    @tag :skip
     test "filters players by max_avg_disposals" do
+      player_season =
+        :player_season
+        |> insert()
+        |> with_game_player(disposals: 4)
+        |> with_game_player(disposals: 3)
+
+      filter = %PlayerStats.Filter{
+        current_year: 2021,
+        max_avg_disposals: 3,
+        team_ids: [player_season.team_season.team_id]
+      }
+
+      assert [] = PlayerStats.list_players(filter)
     end
 
     @tag :skip
