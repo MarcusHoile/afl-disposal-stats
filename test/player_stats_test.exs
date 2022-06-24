@@ -17,10 +17,10 @@ defmodule PlayerStatsTest do
       assert [
                %{
                  avg_disposals: 3.5,
-                 first_name: _,
-                 last_name: _,
                  max_disposals: 4,
-                 min_disposals: 3
+                 min_disposals: 3,
+                 player_id: _,
+                 team_name: _
                }
              ] = PlayerStats.list_players(filter)
     end
@@ -61,7 +61,8 @@ defmodule PlayerStatsTest do
                %{
                  avg_disposals: 4.0,
                  max_disposals: 4,
-                 min_disposals: 4
+                 min_disposals: 4,
+                 team_name: _
                }
              ] = PlayerStats.list_players(filter)
     end
@@ -88,21 +89,29 @@ defmodule PlayerStatsTest do
                %{
                  avg_disposals: 4.0,
                  max_disposals: 4,
-                 min_disposals: 4
+                 min_disposals: 4,
+                 team_name: _
                },
                %{
                  avg_disposals: 3.0,
                  max_disposals: 3,
-                 min_disposals: 3
+                 min_disposals: 3,
+                 team_name: _
                }
              ] = PlayerStats.list_players(filter)
     end
 
-    @tag :skip
     test "empty result, when no team filter" do
+      filter = %PlayerStats.Filter{
+        current_year: 2021,
+        rounds: 1,
+        team_ids: []
+      }
+
+      assert [] = PlayerStats.list_players(filter)
     end
 
-    test "filters players by max_avg_disposals" do
+    test "filters players by team rounds" do
       player_season =
         :player_season
         |> insert()
@@ -111,15 +120,18 @@ defmodule PlayerStatsTest do
 
       filter = %PlayerStats.Filter{
         current_year: 2021,
-        max_avg_disposals: 3,
+        rounds: 1,
         team_ids: [player_season.team_season.team_id]
       }
 
-      assert [] = PlayerStats.list_players(filter)
-    end
-
-    @tag :skip
-    test "filters players by team rounds" do
+      assert [
+               %{
+                 avg_disposals: 3.0,
+                 max_disposals: 3,
+                 min_disposals: 3,
+                 player_id: _
+               }
+             ] = PlayerStats.list_players(filter)
     end
   end
 end
