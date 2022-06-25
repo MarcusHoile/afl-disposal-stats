@@ -38,9 +38,9 @@
         <td><%= player_stat.team_name %></td>
         <td><%= player_stat.first_name %></td>
         <td><%= player_stat.last_name %></td>
-        <td><%= Float.round(player_stat.avg_disposals, 1) %></td>
-        <td><%= player_stat.min_disposals %></td>
-        <td><%= player_stat.max_disposals %></td>
+        <td><div class="px-2"><%= Float.round(player_stat.avg_disposals, 1) %></div></td>
+        <td><div class="px-2"><%= player_stat.min_disposals %></div></td>
+        <td><div class="px-2"><%= player_stat.max_disposals %></div></td>
         <td>
           <div class="flex">
           <%= for stat <- player_stat.form do %>

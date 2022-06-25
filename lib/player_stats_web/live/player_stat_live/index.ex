@@ -26,6 +26,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     filter
     |> PlayerStats.list_players()
     |> Enum.map(&build_player_stat_row(&1, games, filter))
+    |> Enum.sort_by(& &1.avg_disposals, :desc)
   end
 
   defp team_games(%{team_ids: team_ids} = filter) do
@@ -123,25 +124,25 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference > 0 do
     ~H"""
-    <p class="bg-green-400 px-2">+<%= @min_disposals_difference %></p>
+    <p class="bg-green-400 px-2 w-12 text-center">+<%= @min_disposals_difference %></p>
     """
   end
 
   defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference < 0 do
     ~H"""
-    <p class="bg-red-400 px-2">-<%= abs(@min_disposals_difference) %></p>
+    <p class="bg-red-400 px-2 w-12 text-center">-<%= abs(@min_disposals_difference) %></p>
     """
   end
 
   defp game_form(%{min_disposals_difference: 0} = assigns) do
     ~H"""
-    <p class="bg-gray-400 px-2">0</p>
+    <p class="bg-gray-400 px-2 w-12 text-center">0</p>
     """
   end
 
   defp game_form(assigns) do
     ~H"""
-    <p class="px-2">-</p>
+    <p class="px-2 w-12 text-center">-</p>
     """
   end
 end
