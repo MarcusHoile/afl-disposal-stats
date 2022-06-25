@@ -19,13 +19,14 @@
     <tr>
       <th>Avg</th>
       <th>Min</th>
-      <th colspan="5">Max</th>
+      <th colspan="4">Max</th>
+      <th>Games played</th>
     </tr>
   </thead>
   <tbody id="stats">
     <%= if Enum.any?(@stats) do %>
     <%= for player_stat <- @stats do %>
-      <tr id={"player_stat-#{player_stat.id}"}>
+      <tr id={"player_stat-#{player_stat.player_id}"}>
         <td><%= Float.round(player_stat.avg_disposals, 1) %></td>
         <td><%= player_stat.min_disposals %></td>
         <td><%= player_stat.max_disposals %></td>

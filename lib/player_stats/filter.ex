@@ -11,7 +11,7 @@ defmodule PlayerStats.Filter do
     field :min_disposals, :integer, default: 0
     field :max_avg_disposals, :integer
     field :team_ids, {:array, :integer}, default: []
-    field :rounds, :integer, default: 2
+    field :rounds, :integer, default: 26
   end
 
   def build!(attrs) do

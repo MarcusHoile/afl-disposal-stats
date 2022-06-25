@@ -23,6 +23,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     params
     |> PlayerStats.Filter.build!()
     |> PlayerStats.list_players()
+    |> Enum.sort_by(& &1.games_played, :desc)
   end
 
   defp filter(params) do
@@ -46,8 +47,8 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp default_params do
     %{
       "current_year" => default_year(),
-      "min_disposals" => 15,
-      "max_avg_disposals" => 30
+      "min_disposals" => "15",
+      "max_avg_disposals" => "30"
     }
   end
 
