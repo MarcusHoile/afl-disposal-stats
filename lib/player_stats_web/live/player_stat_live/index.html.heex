@@ -1,10 +1,10 @@
-<h1>Stats</h1>
+<h1 class="text-red-500 text-5xl font-bold text-center">Stats</h1>
 
 <h2> Filter </h2>
-<%= if !Map.has_key?(@filter, :team_ids) do %>
+<%= if !Map.has_key?(@current_filters, :team_ids) do %>
   <p>No teams selected</p>
 <% else %>
-<%= for {filter, value} <- @filter do %>
+<%= for {filter, value} <- @current_filters do %>
 <p><%= filter %>: <%= filter_value(value) %></p>
 <% end %>
 <% end %>
@@ -13,27 +13,41 @@
 <table>
   <thead>
     <tr>
-      <th colspan="3">Disposals</th>
       <th colspan="3"></th>
+      <th colspan="3">Disposals</th>
+      <th>Form</th>
     </tr>
     <tr>
+      <th>Team</th>
+      <th colspan="2">Name</th>
       <th>Avg</th>
       <th>Min</th>
-      <th colspan="4">Max</th>
-      <th>Games played</th>
+      <th>Max</th>
+      <th>
+        <div class="flex justify-between">
+        <div>Recent</div>
+        <div>Past</div>
+        </div>
+      </th>
     </tr>
   </thead>
   <tbody id="stats">
     <%= if Enum.any?(@stats) do %>
     <%= for player_stat <- @stats do %>
       <tr id={"player_stat-#{player_stat.player_id}"}>
-        <td><%= Float.round(player_stat.avg_disposals, 1) %></td>
-        <td><%= player_stat.min_disposals %></td>
-        <td><%= player_stat.max_disposals %></td>
         <td><%= player_stat.team_name %></td>
         <td><%= player_stat.first_name %></td>
         <td><%= player_stat.last_name %></td>
-        <td><%= player_stat.games_played %></td>
+        <td><%= Float.round(player_stat.avg_disposals, 1) %></td>
+        <td><%= player_stat.min_disposals %></td>
+        <td><%= player_stat.max_disposals %></td>
+        <td>
+          <div class="flex">
+          <%= for stat <- player_stat.form do %>
+            <%= game_form(stat) %>
+          <% end %>
+          </div>
+        </td>
       </tr>
     <% end %>
     <% else %>

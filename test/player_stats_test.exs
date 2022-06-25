@@ -3,11 +3,15 @@ defmodule PlayerStatsTest do
 
   describe "list_players/1" do
     test "filters players by single team" do
+      season = insert(:season)
+
       player_season =
         :player_season
-        |> insert()
+        |> insert(team_season: build(:team_season, season: season))
         |> with_game_player(disposals: 4)
-        |> with_game_player(disposals: 3)
+
+      # add game the player did not play in
+      insert(:game, season: season, teams: [player_season.team_season.team])
 
       filter = %PlayerStats.Filter{
         current_year: 2021,
@@ -15,29 +19,14 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %{
-                 avg_disposals: 3.5,
-                 max_disposals: 4,
-                 min_disposals: 3,
-                 player_id: _,
-                 team_name: _
+               %PlayerStats.Schema.PlayerSeason{
+                 game_players: [
+                   %PlayerStats.Schema.GamePlayer{disposals: 4, game_id: _, goals: 0, handballs: 0, kicks: 0}
+                 ],
+                 player: %PlayerStats.Schema.Player{},
+                 team_season: %{team: %PlayerStats.Schema.Team{}}
                }
              ] = PlayerStats.list_players(filter)
-    end
-
-    test "filters players by min_disposals" do
-      player_season =
-        :player_season
-        |> insert()
-        |> with_game_player(disposals: 4)
-
-      filter = %PlayerStats.Filter{
-        current_year: 2021,
-        min_disposals: 5,
-        team_ids: [player_season.team_season.team_id]
-      }
-
-      assert [] = PlayerStats.list_players(filter)
     end
 
     test "ignores players of opposition team" do
@@ -58,11 +47,10 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %{
-                 avg_disposals: 4.0,
-                 max_disposals: 4,
-                 min_disposals: 4,
-                 team_name: _
+               %PlayerStats.Schema.PlayerSeason{
+                 game_players: [%PlayerStats.Schema.GamePlayer{disposals: 4}],
+                 player: %PlayerStats.Schema.Player{},
+                 team_season: %{team: %PlayerStats.Schema.Team{}}
                }
              ] = PlayerStats.list_players(filter)
     end
@@ -86,17 +74,15 @@ defmodule PlayerStatsTest do
       }
 
       assert [
-               %{
-                 avg_disposals: 4.0,
-                 max_disposals: 4,
-                 min_disposals: 4,
-                 team_name: _
+               %PlayerStats.Schema.PlayerSeason{
+                 game_players: [%PlayerStats.Schema.GamePlayer{}],
+                 player: %PlayerStats.Schema.Player{},
+                 team_season: %{team: %PlayerStats.Schema.Team{}}
                },
-               %{
-                 avg_disposals: 3.0,
-                 max_disposals: 3,
-                 min_disposals: 3,
-                 team_name: _
+               %PlayerStats.Schema.PlayerSeason{
+                 game_players: [%PlayerStats.Schema.GamePlayer{}],
+                 player: %PlayerStats.Schema.Player{},
+                 team_season: %{team: %PlayerStats.Schema.Team{}}
                }
              ] = PlayerStats.list_players(filter)
     end
@@ -109,29 +95,6 @@ defmodule PlayerStatsTest do
       }
 
       assert [] = PlayerStats.list_players(filter)
-    end
-
-    test "filters players by team rounds" do
-      player_season =
-        :player_season
-        |> insert()
-        |> with_game_player(disposals: 4)
-        |> with_game_player(disposals: 3)
-
-      filter = %PlayerStats.Filter{
-        current_year: 2021,
-        rounds: 1,
-        team_ids: [player_season.team_season.team_id]
-      }
-
-      assert [
-               %{
-                 avg_disposals: 3.0,
-                 max_disposals: 3,
-                 min_disposals: 3,
-                 player_id: _
-               }
-             ] = PlayerStats.list_players(filter)
     end
   end
 end
