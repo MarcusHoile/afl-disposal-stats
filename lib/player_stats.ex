@@ -30,6 +30,10 @@ defmodule PlayerStats do
 
   def list_players(%PlayerStats.Filter{team_ids: []}), do: []
 
+  def teams do
+    Repo.all(Schema.Team)
+  end
+
   def team_games(%PlayerStats.Filter{current_year: current_year, team_ids: team_ids}) do
     from(g in Schema.Game,
       join: t in assoc(g, :teams),

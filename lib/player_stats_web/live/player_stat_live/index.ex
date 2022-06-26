@@ -6,6 +6,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   def mount(params, _session, socket) do
     socket =
       socket
+      |> assign(:teams, PlayerStats.teams())
       |> assign(:filter, build_filter(default_filter(), params))
       |> assign_previous_rounds()
       |> load_stats()
@@ -128,17 +129,6 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     PlayerStats.Filter.build!(filter, params)
   end
 
-  defp current_filters(filter) do
-    filter
-    |> Map.from_struct()
-    |> Enum.reject(fn
-      {_k, []} -> true
-      {_k, nil} -> true
-      {_k, _v} -> false
-    end)
-    |> Enum.into(%{})
-  end
-
   def filter_value(value) when is_list(value) do
     Enum.join(value, ",")
   end
@@ -146,6 +136,18 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   def filter_value(value), do: value
 
   defp current_params(filter), do: Map.from_struct(filter)
+
+  defp merge_team_params(%{team_ids: [_, _]} = filter, team) do
+    filter
+    |> Map.put(:team_ids, [team.id])
+    |> current_params()
+  end
+
+  defp merge_team_params(%{team_ids: team_ids} = filter, team) do
+    filter
+    |> Map.put(:team_ids, Enum.uniq([team.id | team_ids]))
+    |> current_params()
+  end
 
   defp default_filter do
     %PlayerStats.Filter{
@@ -190,4 +192,10 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-green-300"
   defp target_disposal_css(_, _), do: ""
+
+  defp dasherize(name) do
+    name
+    |> String.downcase()
+    |> String.replace(" ", "-")
+  end
 end
