@@ -3,17 +3,16 @@ defmodule PlayerStats do
   import Ecto.Query
   alias PlayerStats.{Repo, Schema}
 
-  def previous_team_rounds(team_id, %{rounds: rounds, current_year: current_year}) do
+  def previous_rounds(%{current_year: current_year}) do
     from(g in Schema.Game,
       join: t in assoc(g, :teams),
       join: s in assoc(g, :season),
       on: s.year == ^current_year,
-      where: t.id == ^team_id,
       order_by: [desc: g.round],
+      distinct: true,
       select: g.round
     )
     |> Repo.all()
-    |> Enum.slice(0..(rounds - 1))
   end
 
   def list_players(%PlayerStats.Filter{team_ids: [t1, t2]} = filter) do
