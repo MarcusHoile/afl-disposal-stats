@@ -164,7 +164,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp game_form(%{min_disposals_difference: 0} = assigns) do
     ~H"""
-    <p class="bg-gray-400 px-2 w-12 text-center">0</p>
+    <p class="bg-cyan-400 px-2 w-12 text-center">0</p>
     """
   end
 
