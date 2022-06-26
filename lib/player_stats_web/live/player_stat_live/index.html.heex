@@ -1,14 +1,28 @@
-<h1 class="text-red-500 text-5xl font-bold text-center">Stats</h1>
+<h1 class="text-red-500 text-5xl font-bold text-center">Player Disposal Stats</h1>
 
-<h2> Filter </h2>
-<%= if !Map.has_key?(@current_filters, :team_ids) do %>
-  <p>No teams selected</p>
-<% else %>
-<%= for {filter, value} <- @current_filters do %>
-<p><%= filter %>: <%= filter_value(value) %></p>
-<% end %>
-<% end %>
+<section class="w-1/3">
+  <h2> Filter </h2>
+  <%= if !Map.has_key?(current_filters(@filter), :team_ids) do %>
+    <p>No teams selected</p>
+  <% else %>
+    <%= for {filter, value} <- current_filters(@filter) do %>
+    <p><%= filter %>: <%= filter_value(value) %></p>
+    <% end %>
+  <% end %>
 
+  <div class="flex justify-around items-center">
+    <div class="items-center">Disposal Target</div>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 15}) do %>
+      <div class={"rounded p-8 border border-gray-400 #{target_disposal_css(@filter, 15)}"}>15+</div>
+    <% end %>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 20}) do %>
+      <div class={"rounded p-8 border border-gray-400 #{target_disposal_css(@filter, 20)}"}>20+</div>
+    <% end %>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 25}) do %>
+      <div class={"rounded p-8 border border-gray-400 #{target_disposal_css(@filter, 25)}"}>25+</div>
+    <% end %>
+  </div>
+</section>
 
 <table>
   <thead>

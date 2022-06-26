@@ -12,8 +12,8 @@ defmodule PlayerStats.Filter do
     field :team_ids, {:array, :integer}, default: []
   end
 
-  def build!(attrs) do
-    %__MODULE__{}
+  def build!(filter, attrs) do
+    filter
     |> cast(attrs, [:current_year, :min_disposals, :team_ids])
     |> apply_action(:insert)
     |> case do

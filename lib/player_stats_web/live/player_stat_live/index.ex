@@ -4,31 +4,44 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   @impl true
   def mount(params, _session, socket) do
-    params = Map.merge(default_params(), params)
-    filter = build_filter(params)
-    previous_rounds = PlayerStats.previous_rounds(filter)
-
     socket =
       socket
-      |> assign(:stats, list_stats(filter, previous_rounds))
-      |> assign(:current_filters, current_filters(filter))
-      |> assign(:previous_rounds, previous_rounds)
+      |> assign(:filter, build_filter(default_filter(), params))
+      |> assign_previous_rounds()
+      |> load_stats()
 
     {:ok, socket}
   end
 
-  # @impl true
   # def handle_params(params, _url, socket) do
   #   {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   # end
 
-  defp list_stats(filter, previous_rounds) do
+  @impl true
+  def handle_params(params, _uri, %{assigns: %{filter: filter}} = socket) do
+    socket =
+      socket
+      |> assign(:filter, build_filter(filter, params))
+      |> load_stats()
+
+    {:noreply, socket}
+  end
+
+  defp assign_previous_rounds(%{assigns: %{filter: filter}} = socket) do
+    socket
+    |> assign(:previous_rounds, PlayerStats.previous_rounds(filter))
+  end
+
+  defp load_stats(%{assigns: %{filter: filter, previous_rounds: previous_rounds}} = socket) do
     data = %{games: team_games(filter), previous_rounds: previous_rounds}
 
-    filter
-    |> PlayerStats.list_players()
-    |> Enum.map(&build_player_stat_row(&1, data, filter))
-    |> Enum.sort_by(& &1.avg_disposals, :desc)
+    stats =
+      filter
+      |> PlayerStats.list_players()
+      |> Enum.map(&build_player_stat_row(&1, data, filter))
+      |> Enum.sort_by(& &1.avg_disposals, :desc)
+
+    assign(socket, :stats, stats)
   end
 
   defp team_games(%{team_ids: team_ids} = filter) do
@@ -111,8 +124,8 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     end)
   end
 
-  defp build_filter(params) do
-    PlayerStats.Filter.build!(params)
+  defp build_filter(filter, params) do
+    PlayerStats.Filter.build!(filter, params)
   end
 
   defp current_filters(filter) do
@@ -132,11 +145,12 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   def filter_value(value), do: value
 
-  defp default_params do
-    %{
-      "current_year" => default_year(),
-      "min_disposals" => "15",
-      "max_avg_disposals" => "30"
+  defp current_params(filter), do: Map.from_struct(filter)
+
+  defp default_filter do
+    %PlayerStats.Filter{
+      current_year: default_year(),
+      min_disposals: 15
     }
   end
 
@@ -173,4 +187,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     <p class="px-2 w-12 text-center">-</p>
     """
   end
+
+  defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-green-300"
+  defp target_disposal_css(_, _), do: ""
 end

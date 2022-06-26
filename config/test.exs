@@ -1,5 +1,7 @@
 import Config
 
+config :player_stats, current_year: 2021
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
