@@ -190,7 +190,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     """
   end
 
-  defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-green-300"
+  defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-fuchsia-400 text-white"
   defp target_disposal_css(_, _), do: ""
 
   defp dasherize(name) do
