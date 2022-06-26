@@ -24,9 +24,10 @@
       <th>Min</th>
       <th>Max</th>
       <th>
-        <div class="flex justify-between">
-        <div>Recent</div>
-        <div>Past</div>
+        <div class="flex">
+        <%= for round <- @previous_rounds do %>
+         <div class="w-12"><%= round %></div>
+        <% end %>
         </div>
       </th>
     </tr>

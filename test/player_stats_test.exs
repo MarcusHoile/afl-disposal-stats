@@ -90,7 +90,6 @@ defmodule PlayerStatsTest do
     test "empty result, when no team filter" do
       filter = %PlayerStats.Filter{
         current_year: 2021,
-        rounds: 1,
         team_ids: []
       }
 

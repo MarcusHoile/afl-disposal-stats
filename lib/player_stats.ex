@@ -52,7 +52,7 @@ defmodule PlayerStats do
       join: t in assoc(ts, :team),
       left_join: gp in assoc(ps, :game_players),
       left_join: g in assoc(gp, :game),
-      preload: [game_players: gp, player: p, team_season: :team]
+      preload: [game_players: {gp, :game}, player: p, team_season: :team]
     )
   end
 end

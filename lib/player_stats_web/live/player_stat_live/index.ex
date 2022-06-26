@@ -5,11 +5,14 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   @impl true
   def mount(params, _session, socket) do
     params = Map.merge(default_params(), params)
+    filter = build_filter(params)
+    previous_rounds = PlayerStats.previous_rounds(filter)
 
     socket =
       socket
-      |> assign(:stats, list_stats(params))
-      |> assign(:current_filters, current_filters(params))
+      |> assign(:stats, list_stats(filter, previous_rounds))
+      |> assign(:current_filters, current_filters(filter))
+      |> assign(:previous_rounds, previous_rounds)
 
     {:ok, socket}
   end
@@ -19,13 +22,12 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   #   {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   # end
 
-  defp list_stats(params) do
-    filter = build_filter(params)
-    games = team_games(filter)
+  defp list_stats(filter, previous_rounds) do
+    data = %{games: team_games(filter), previous_rounds: previous_rounds}
 
     filter
     |> PlayerStats.list_players()
-    |> Enum.map(&build_player_stat_row(&1, games, filter))
+    |> Enum.map(&build_player_stat_row(&1, data, filter))
     |> Enum.sort_by(& &1.avg_disposals, :desc)
   end
 
@@ -49,18 +51,18 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
            player: %{first_name: first_name, id: player_id, last_name: last_name},
            team_season: %{team: %{id: team_id, name: team_name}}
          },
-         team_games,
+         game_data,
          filter
        ) do
-    games = Map.get(team_games, team_id)
     disposals = Enum.map(game_players, & &1.disposals)
+    game_data = Map.merge(game_data, %{game_players: game_players, team_id: team_id})
 
     %{
       first_name: first_name,
       last_name: last_name,
       player_id: player_id,
       team_name: team_name,
-      form: player_form(games, game_players, filter),
+      form: player_form(game_data, filter),
       avg_disposals: avg_disposals(disposals, game_players),
       max_disposals: Enum.max(disposals),
       min_disposals: Enum.min(disposals)
@@ -71,8 +73,27 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     Enum.sum(disposals) / Enum.count(game_players)
   end
 
-  defp player_form(games, game_players, %{min_disposals: min_disposals}) do
-    Enum.map(games, fn %{id: game_id} ->
+  defp player_form(
+         %{
+           games: games,
+           game_players: game_players,
+           previous_rounds: previous_rounds,
+           team_id: team_id
+         },
+         %{min_disposals: min_disposals}
+       ) do
+    team_games =
+      games
+      |> Map.get(team_id, [])
+      |> Enum.group_by(& &1.round)
+
+    previous_rounds
+    |> Enum.map(fn round ->
+      %{id: game_id} =
+        team_games
+        |> Map.get(round, [])
+        |> List.first(%PlayerStats.Schema.Game{round: round})
+
       game_players
       |> Enum.find(&(&1.game_id == game_id))
       |> case do
@@ -85,6 +106,8 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
             min_disposals_difference: disposals - min_disposals
           }
       end
+      |> Map.put(:round, round)
+      |> Map.put(:bye, is_nil(game_id))
     end)
   end
 
@@ -92,9 +115,8 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     PlayerStats.Filter.build!(params)
   end
 
-  defp current_filters(params) do
-    params
-    |> build_filter()
+  defp current_filters(filter) do
+    filter
     |> Map.from_struct()
     |> Enum.reject(fn
       {_k, []} -> true
@@ -120,6 +142,12 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp default_year do
     Application.get_env(:player_stats, :current_year, Date.utc_today().year())
+  end
+
+  defp game_form(%{bye: true} = assigns) do
+    ~H"""
+    <p class="bg-gray-200 px-2 w-12 text-center">B</p>
+    """
   end
 
   defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference > 0 do
