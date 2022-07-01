@@ -93,23 +93,6 @@
   cursor: pointer;
 }
 
-.fade-in-scale {
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
-}
-
-.fade-out-scale {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
-}
-
-.fade-in {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
-}
-
-.fade-out {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
-}
-
-
 .adelaide-crows {
   background: url("/images/afl-logos.jpg") -23px -10px/500px;
 }
@@ -182,6 +165,127 @@
   background: url("/images/afl-logos.jpg") -423px -75px/500px;
 }
 
+.afl-logos {
+  background-image: url("/images/afl-logos.jpg");
+}
+
+.adelaide-crows-logo {
+  background-position-x: -8px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.brisbane-lions-logo {
+  background-position-x: -28px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.carlton-blues-logo {
+  background-position-x: -51px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.collingwood-magpies-logo {
+  background-position-x: -74px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.essendon-bombers-logo {
+  background-position-x: -97px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.fremantle-dockers-logo {
+  background-position-x: -118px;
+  background-position-y: -2px;
+  background-size: 140px;
+}
+
+.north-melbourne-kangaroos-logo {
+  background-position-x: -118px;
+  background-position-y: -22px;
+  background-size: 140px;
+}
+
+.melbourne-demons-logo {
+  background-position-x: -96px;
+  background-position-y: -22px;
+  background-size: 140px;
+}
+
+.hawthorn-hawks-logo {
+  background-position-x: -73px;
+  background-position-y: -22px;
+  background-size: 140px;
+}
+
+.greater-western-sydney-giants-logo {
+  background-position-x: -50px;
+  background-position-y: -22px;
+  background-size: 140px;
+}
+
+.gold-coast-suns-logo {
+  background-position-x: -27px;
+  background-position-y: -24px;
+  background-size: 140px;
+}
+
+.geelong-cats-logo {
+  background-position-x: -5px;
+  background-position-y: -22px;
+  background-size: 140px;
+}
+
+.port-adelaide-power-logo {
+  background-position-x: -5px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+.richmond-tigers-logo {
+  background-position-x: -27px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+.st-kilda-saints-logo {
+  background-position-x: -50px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+.sydney-swans-logo {
+  background-position-x: -73px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+.west-coast-eagles-logo {
+  background-position-x: -96px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+.western-bulldogs-logo {
+  background-position-x: -119px;
+  background-position-y: -42px;
+  background-size: 140px;
+}
+
+
+@media screen(lg) {
+  .west-coast-eagles-logo {
+    background-position-x: -170px;
+    background-position-y: -73px;
+    background-size: 245px;
+  }
+}
+
 .bg-logo-size-sm.adelaide-crows {
   background: url("/images/afl-logos.jpg") -10px -5px/250px;
 }
@@ -252,48 +356,4 @@
 
 .bg-logo-size-sm.north-melbourne-kangaroos {
   background: url("/images/afl-logos.jpg") -210px -39px/250px;
-}
-
-@keyframes fade-in-scale-keys {
-  0% {
-    scale: 0.95;
-    opacity: 0;
-  }
-
-  100% {
-    scale: 1.0;
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out-scale-keys {
-  0% {
-    scale: 1.0;
-    opacity: 1;
-  }
-
-  100% {
-    scale: 0.95;
-    opacity: 0;
-  }
-}
-
-@keyframes fade-in-keys {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out-keys {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
 }
