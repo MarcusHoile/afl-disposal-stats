@@ -9,10 +9,7 @@ defmodule PlayerStats.Crawler.Scraper do
   alias Crawler.Store.Page
   alias PlayerStats.{Repo, Schema}
 
-  def scrape(
-        %Page{url: "https://afltables.com/afl/stats/games" <> _ = url, body: body, opts: _opts} =
-          page
-      ) do
+  def scrape(%Page{url: "https://afltables.com/afl/stats/games" <> _ = url, body: body, opts: _opts} = page) do
     {:ok, html} = Floki.parse_document(body)
 
     with current_year <- get_current_year(url),
@@ -167,7 +164,7 @@ defmodule PlayerStats.Crawler.Scraper do
       |> Floki.text()
 
     from(t in PlayerStats.Schema.Team,
-      where: like(t.name, ^"%#{team_name}%"),
+      where: like(t.name, ^"#{team_name}%"),
       preload: [team_seasons: ^team_seasons_query(current_year)],
       limit: 1
     )
@@ -269,8 +266,7 @@ defmodule PlayerStats.Crawler.Scraper do
       |> Floki.find("tr:first-of-type td:nth-child(2)")
       |> Floki.text()
 
-    %{"played_at" => played_at} =
-      Regex.named_captures(~r/(?<=Date:)\D+(?<played_at>\d{1,2}\-[a-zA-Z]+\-\d+)/, row)
+    %{"played_at" => played_at} = Regex.named_captures(~r/(?<=Date:)\D+(?<played_at>\d{1,2}\-[a-zA-Z]+\-\d+)/, row)
 
     played_at
     |> Timex.parse("%d-%b-%Y", :strftime)

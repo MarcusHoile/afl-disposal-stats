@@ -1,4 +1,7 @@
 defmodule PlayerStats.Crawler.UrlFilter do
+  @moduledoc """
+  Policy for which urls to scrape
+  """
   import Ecto.Query, only: [from: 2]
 
   @behaviour Crawler.Fetcher.UrlFilter.Spec
@@ -23,7 +26,7 @@ defmodule PlayerStats.Crawler.UrlFilter do
     url
     |> URI.parse()
     |> case do
-      %{authority: @allowed_domain} ->
+      %URI{host: @allowed_domain} ->
         true
 
       _ ->
