@@ -40,6 +40,12 @@ config :player_stats,
     "%P" => "percentage_of_game_playes"
   }
 
+config :player_stats, PlayerStats.Crawler,
+  interval: 100,
+  url_filter: PlayerStats.Crawler.UrlFilter,
+  scraper: PlayerStats.Crawler.Scraper,
+  workers: 1
+
 # Configures the endpoint
 config :player_stats, PlayerStatsWeb.Endpoint,
   url: [host: "localhost"],

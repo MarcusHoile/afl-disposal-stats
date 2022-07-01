@@ -1,11 +1,7 @@
 defmodule PlayerStats.Crawler do
-  def crawl(url \\ "https://afltables.com/afl/seas/2022.html", _opts \\ []) do
-    Crawler.crawl(url,
-      interval: 100,
-      url_filter: PlayerStats.Crawler.UrlFilter,
-      scraper: PlayerStats.Crawler.Scraper,
-      save_to: "/Users/marcus/Documents/player-stats",
-      workers: 1
-    )
+  def crawl(url \\ "https://afltables.com/afl/seas/2022.html", opts \\ default_options()) do
+    Crawler.crawl(url, opts)
   end
+
+  defp default_options, do: Application.get_env(:player_stats, __MODULE__)
 end
