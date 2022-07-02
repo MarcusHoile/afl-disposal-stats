@@ -24,7 +24,19 @@
       <div class={"rounded p-4 border border-gray-400 #{target_disposal_css(@filter, 25)}"}>25+</div>
     <% end %>
   </div>
+  <div>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_streak: true}) do %>
+      <%= tag :input, type: "radio", id: "filter-players-by-streak", name: "player_streak_filter", checked: @filter.filter_by_streak %>
+      <label for="filter-players-by-streak">Players in form</label>
+    <% end %>
+
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_streak: false}) do %>
+      <%= tag :input, type: "radio", id: "show-all-players", name: "player_streak_filter", checked: !@filter.filter_by_streak %>
+      <label for="show-all-players">Show all players</label>
+    <% end %>
+  </div>
 </section>
+
 <section class="w-screen lg:w-min text-sm lg:text-base">
   <table class="overflow-x-scroll">
     <thead>
