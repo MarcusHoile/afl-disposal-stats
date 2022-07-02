@@ -211,6 +211,11 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-blue-400 text-white"
   defp target_disposal_css(_, _), do: ""
 
+  defp team_logo_filter_css(team, %{team_ids: team_ids}) do
+    selected = if Enum.any?(team_ids, &(&1 == team.id)), do: "selected", else: ""
+    "filter-logo filter-logo--#{dasherize(team.name)} " <> selected
+  end
+
   defp dasherize(name) do
     name
     |> String.downcase()

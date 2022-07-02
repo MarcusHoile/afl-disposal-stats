@@ -93,75 +93,79 @@
   cursor: pointer;
 }
 
-.adelaide-crows {
+.filter-logo.selected {
+  opacity: .4;
+}
+
+.filter-logo--adelaide-crows {
   background: url("/images/afl-logos.jpg") -23px -10px/500px;
 }
 
-.brisbane-lions {
+.filter-logo--brisbane-lions {
   background: url("/images/afl-logos.jpg") -93px -10px/500px;
 }
 
-.carlton-blues {
+.filter-logo--carlton-blues {
   background: url("/images/afl-logos.jpg") -173px -10px/500px;
 }
 
-.collingwood-magpies {
+.filter-logo--collingwood-magpies {
   background: url("/images/afl-logos.jpg") -263px -10px/500px;
 }
 
-.essendon-bombers {
+.filter-logo--essendon-bombers {
   background: url("/images/afl-logos.jpg") -343px -10px/500px;
 }
 
-.fremantle-dockers {
+.filter-logo--fremantle-dockers {
   background: url("/images/afl-logos.jpg") -423px -10px/500px;
 }
 
-.port-adelaide-power {
+.filter-logo--port-adelaide-power {
   background: url("/images/afl-logos.jpg") -23px -150px/500px;
 }
 
-.richmond-tigers {
+.filter-logo--richmond-tigers {
   background: url("/images/afl-logos.jpg") -103px -150px/500px;
 }
 
-.st-kilda-saints {
+.filter-logo--st-kilda-saints {
   background: url("/images/afl-logos.jpg") -183px -150px/500px;
 }
 
-.sydney-swans {
+.filter-logo--sydney-swans {
   background: url("/images/afl-logos.jpg") -263px -150px/500px;
 }
 
-.west-coast-eagles {
+.filter-logo--west-coast-eagles {
   background: url("/images/afl-logos.jpg") -343px -150px/500px;
 }
 
-.western-bulldogs {
+.filter-logo--western-bulldogs {
   background: url("/images/afl-logos.jpg") -423px -150px/500px;
 }
 
-.geelong-cats {
+.filter-logo--geelong-cats {
   background: url("/images/afl-logos.jpg") -23px -75px/500px;
 }
 
-.gold-coast-suns {
+.filter-logo--gold-coast-suns {
   background: url("/images/afl-logos.jpg") -103px -75px/500px;
 }
 
-.greater-western-sydney-giants {
+.filter-logo--greater-western-sydney-giants {
   background: url("/images/afl-logos.jpg") -183px -75px/500px;
 }
 
-.hawthorn-hawks {
+.filter-logo--hawthorn-hawks {
   background: url("/images/afl-logos.jpg") -263px -75px/500px;
 }
 
-.melbourne-demons {
+.filter-logo--melbourne-demons {
   background: url("/images/afl-logos.jpg") -343px -75px/500px;
 }
 
-.north-melbourne-kangaroos {
+.filter-logo--north-melbourne-kangaroos {
   background: url("/images/afl-logos.jpg") -423px -75px/500px;
 }
 

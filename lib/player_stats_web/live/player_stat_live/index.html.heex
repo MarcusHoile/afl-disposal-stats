@@ -7,7 +7,7 @@
     <%= for team <- @teams do %>
     <div class="relative h-16 w-16">
       <%= live_patch to: Routes.player_stat_index_path(@socket, :index, merge_team_params(@filter, team)) do %>
-        <div class={"absolute inset-0 bg-no-repeat #{dasherize(team.name)}"}></div>
+        <div class={"absolute inset-0 bg-no-repeat #{team_logo_filter_css(team, @filter)}"}></div>
       <% end %>
     </div>
     <% end %>
