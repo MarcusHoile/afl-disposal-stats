@@ -25,7 +25,7 @@
     <% end %>
   </div>
 </section>
-<section class="w-screen lg:w-min text-xs lg:text-base">
+<section class="w-screen lg:w-min text-sm lg:text-base">
   <table class="overflow-x-scroll">
     <thead>
       <tr>
@@ -58,7 +58,7 @@
               <div class={"absolute inset-0 bg-no-repeat afl-logos #{dasherize(player_stat.team_name)}-logo"}></div>
             </div>
           </td>
-          <td><%= player_stat.first_name %></td>
+          <td class="py-1"><%= player_stat.first_name %></td>
           <td><%= player_stat.last_name %></td>
           <td><div class="px-2"><%= Float.round(player_stat.avg_disposals, 1) %></div></td>
           <td><div class="px-2"><%= player_stat.min_disposals %></div></td>

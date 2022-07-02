@@ -162,31 +162,31 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp game_form(%{bye: true} = assigns) do
     ~H"""
-    <p class="bg-gray-200 lg:px-2 lg:w-12 w-6 text-center">B</p>
+    <p class="bg-gray-200 game-form-table-cell">B</p>
     """
   end
 
   defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference > 0 do
     ~H"""
-    <p class="bg-green-400 lg:px-2 lg:w-12 w-6 text-center">+<%= @min_disposals_difference %></p>
+    <p class="bg-green-400 game-form-table-cell">+<%= @min_disposals_difference %></p>
     """
   end
 
   defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference < 0 do
     ~H"""
-    <p class="bg-red-400 lg:px-2 lg:w-12 w-6 text-center">-<%= abs(@min_disposals_difference) %></p>
+    <p class="bg-red-400 game-form-table-cell">-<%= abs(@min_disposals_difference) %></p>
     """
   end
 
   defp game_form(%{min_disposals_difference: 0} = assigns) do
     ~H"""
-    <p class="bg-cyan-300 lg:px-2 lg:w-12 w-6 text-center">0</p>
+    <p class="bg-cyan-300 game-form-table-cell">0</p>
     """
   end
 
   defp game_form(assigns) do
     ~H"""
-    <p class="lg:px-2 lg:w-12 w-6 text-center">-</p>
+    <p class="game-form-table-cell">-</p>
     """
   end
 
