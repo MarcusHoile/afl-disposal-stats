@@ -98,7 +98,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     Enum.reduce_while(form, 0, fn
       %{bye: true}, acc -> {:cont, acc}
       %{played: false, bye: false}, acc -> {:halt, acc}
-      %{played: true, min_disposals_difference: disposals}, acc when disposals < 0 -> {:halt, acc}
+      %{played: true, stat_target_difference: difference}, acc when difference < 0 -> {:halt, acc}
       _, acc -> {:cont, acc + 1}
     end)
   end
@@ -110,7 +110,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
            previous_rounds: previous_rounds,
            team_id: team_id
          },
-         %{min_disposals: min_disposals}
+         filter
        ) do
     team_games =
       games
@@ -130,10 +130,10 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
         nil ->
           %{played: false}
 
-        %{disposals: disposals} ->
+        game_player ->
           %{
             played: true,
-            min_disposals_difference: disposals - min_disposals
+            stat_target_difference: stat_target_difference(game_player, filter)
           }
       end
       |> Map.put(:round, round)
@@ -182,19 +182,19 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     """
   end
 
-  defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference > 0 do
+  defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference > 0 do
     ~H"""
-    <p class="bg-green-400 game-form-table-cell">+<%= @min_disposals_difference %></p>
+    <p class="bg-green-400 game-form-table-cell">+<%= @stat_target_difference %></p>
     """
   end
 
-  defp game_form(%{min_disposals_difference: min_disposals_difference} = assigns) when min_disposals_difference < 0 do
+  defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference < 0 do
     ~H"""
-    <p class="bg-red-400 game-form-table-cell">-<%= abs(@min_disposals_difference) %></p>
+    <p class="bg-red-400 game-form-table-cell">-<%= abs(@stat_target_difference) %></p>
     """
   end
 
-  defp game_form(%{min_disposals_difference: 0} = assigns) do
+  defp game_form(%{stat_target_difference: 0} = assigns) do
     ~H"""
     <p class="bg-cyan-300 game-form-table-cell">0</p>
     """
@@ -209,6 +209,9 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp target_disposal_css(%{min_disposals: min_disposals}, min_disposals), do: "bg-blue-400 text-white"
   defp target_disposal_css(_, _), do: ""
 
+  defp target_goal_css(%{min_goals: min_goals}, min_goals), do: "bg-blue-400 text-white"
+  defp target_goal_css(_, _), do: ""
+
   defp team_logo_filter_css(team, %{team_ids: team_ids}) do
     selected = if Enum.any?(team_ids, &(&1 == team.id)), do: "selected", else: ""
     "filter-logo filter-logo--#{dasherize(team.name)} " <> selected
@@ -218,5 +221,13 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     name
     |> String.downcase()
     |> String.replace(" ", "-")
+  end
+
+  defp stat_target_difference(%{goals: goals}, %{min_goals: min_goals}) when min_goals > 0 do
+    goals - min_goals
+  end
+
+  defp stat_target_difference(%{disposals: disposals}, %{min_disposals: min_disposals}) do
+    disposals - min_disposals
   end
 end
