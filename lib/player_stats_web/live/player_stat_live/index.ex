@@ -14,12 +14,10 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     {:ok, socket}
   end
 
-  # def handle_params(params, _url, socket) do
-  #   {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-  # end
-
   @impl true
   def handle_params(params, _uri, %{assigns: %{filter: filter}} = socket) do
+    params = Map.put_new_lazy(params, "team_ids", fn -> [] end)
+
     socket =
       socket
       |> assign(:filter, build_filter(filter, params))
