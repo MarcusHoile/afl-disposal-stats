@@ -2,7 +2,6 @@ defmodule PlayerStats.Seeds do
   def insert do
     insert_teams!()
     insert_season!()
-
   end
 
   defp insert_season! do
@@ -31,7 +30,6 @@ defmodule PlayerStats.Seeds do
       "Western Bulldogs"
     ]
 
-    teams
-    |> Enum.each(&PlayerStats.Repo.insert(%PlayerStats.Schema.Team{name: &1}))
+    teams |> Enum.each(&PlayerStats.Repo.insert(%PlayerStats.Schema.Team{name: &1}))
   end
 end
