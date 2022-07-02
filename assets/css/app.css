@@ -279,81 +279,111 @@
 
 
 @media screen(lg) {
+  .adelaide-crows-logo {
+    background-position-x: -10px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .brisbane-lions-logo {
+    background-position-x: -49px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .carlton-blues-logo {
+    background-position-x: -88px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .collingwood-magpies-logo {
+    background-position-x: -127px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .essendon-bombers-logo {
+    background-position-x: -170px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .fremantle-dockers-logo {
+    background-position-x: -209px;
+    background-position-y: -2px;
+    background-size: 250px;
+  }
+
+  .north-melbourne-kangaroos-logo {
+    background-position-x: -209px;
+    background-position-y: -39px;
+    background-size: 250px;
+  }
+
+  .melbourne-demons-logo {
+    background-position-x: -170px;
+    background-position-y: -39px;
+    background-size: 250px;
+  }
+
+  .hawthorn-hawks-logo {
+    background-position-x: -127px;
+    background-position-y: -39px;
+    background-size: 250px;
+  }
+
+  .greater-western-sydney-giants-logo {
+    background-position-x: -88px;
+    background-position-y: -39px;
+    background-size: 250px;
+  }
+
+  .gold-coast-suns-logo {
+    background-position-x: -49px;
+    background-position-y: -41px;
+    background-size: 250px;
+  }
+
+  .geelong-cats-logo {
+    background-position-x: -10px;
+    background-position-y: -38px;
+    background-size: 250px;
+  }
+
+  .port-adelaide-power-logo {
+    background-position-x: -10px;
+    background-position-y: -75px;
+    background-size: 250px;
+  }
+
+  .richmond-tigers-logo {
+    background-position-x: -49px;
+    background-position-y: -75px;
+    background-size: 250px;
+  }
+
+  .st-kilda-saints-logo {
+    background-position-x: -88px;
+    background-position-y: -75px;
+    background-size: 250px;
+  }
+
+  .sydney-swans-logo {
+    background-position-x: -127px;
+    background-position-y: -75px;
+    background-size: 250px;
+  }
+
   .west-coast-eagles-logo {
     background-position-x: -170px;
     background-position-y: -73px;
     background-size: 245px;
   }
-}
 
-.bg-logo-size-sm.adelaide-crows {
-  background: url("/images/afl-logos.jpg") -10px -5px/250px;
-}
-
-.bg-logo-size-sm.brisbane-lions {
-  background: url("/images/afl-logos.jpg") -47px -5px/250px;
-}
-
-.bg-logo-size-sm.carlton-blues {
-  background: url("/images/afl-logos.jpg") -88px -5px/250px;
-}
-
-.bg-logo-size-sm.collingwood-magpies {
-  background: url("/images/afl-logos.jpg") -128px -5px/250px;
-}
-
-.bg-logo-size-sm.essendon-bombers {
-  background: url("/images/afl-logos.jpg") -170px -5px/250px;
-}
-
-.bg-logo-size-sm.fremantle-dockers {
-  background: url("/images/afl-logos.jpg") -210px -5px/250px;
-}
-
-.bg-logo-size-sm.port-adelaide-power {
-  background: url("/images/afl-logos.jpg") -8px -75px/250px;
-}
-
-.bg-logo-size-sm.richmond-tigers {
-  background: url("/images/afl-logos.jpg") -47px -75px/250px;
-}
-
-.bg-logo-size-sm.st-kilda-saints {
-  background: url("/images/afl-logos.jpg") -87px -75px/250px;
-}
-
-.bg-logo-size-sm.sydney-swans {
-  background: url("/images/afl-logos.jpg") -87px -75px/250px;
-}
-
-.bg-logo-size-sm.west-coast-eagles {
-  background: url("/images/afl-logos.jpg") -170px -75px/250px;
-}
-
-.bg-logo-size-sm.western-bulldogs {
-  background: url("/images/afl-logos.jpg") -210px -75px/250px;
-}
-
-.bg-logo-size-sm.geelong-cats {
-  background: url("/images/afl-logos.jpg") -8px -38px/250px;
-}
-
-.bg-logo-size-sm.gold-coast-suns {
-  background: url("/images/afl-logos.jpg") -47px -39px/250px;
-}
-
-.bg-logo-size-sm.greater-western-sydney-giants {
-  background: url("/images/afl-logos.jpg") -86px -39px/250px;
-}
-
-.bg-logo-size-sm.hawthorn-hawks {
-  background: url("/images/afl-logos.jpg") -129px -39px/250px;
-}
-
-.bg-logo-size-sm.melbourne-demons {
-  background: url("/images/afl-logos.jpg") -170px -39px/250px;
-}
-
-.bg-logo-size-sm.north-melbourne-kangaroos {
-  background: url("/images/afl-logos.jpg") -210px -39px/250px;
+  .western-bulldogs-logo {
+    background-position-x: -207px;
+    background-position-y: -75px;
+    background-size: 250px;
+  }
 }
