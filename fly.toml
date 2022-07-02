@@ -1,6 +1,6 @@
-# fly.toml file generated for divine-wind-8818 on 2022-06-27T17:01:43+10:00
+# fly.toml file generated for blue-water-8735 on 2022-07-02T09:32:34+10:00
 
-app = "divine-wind-8818"
+app = "blue-water-8735"
 kill_signal = "SIGTERM"
 kill_timeout = 5
 processes = []
@@ -9,7 +9,7 @@ processes = []
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "divine-wind-8818.fly.dev"
+  PHX_HOST = "blue-water-8735.fly.dev"
 
 [experimental]
   allowed_public_ports = []
