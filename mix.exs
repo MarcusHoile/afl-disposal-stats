@@ -41,6 +41,7 @@ defmodule PlayerStats.MixProject do
       {:ex_machina, "~> 2.7.0"},
       {:floki, ">= 0.30.0"},
       {:gettext, "~> 0.18"},
+      {:heroicons, "~> 0.3"},
       {:jason, "~> 1.2"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_ecto, "~> 4.4"},
