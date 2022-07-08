@@ -234,11 +234,37 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     disposals - min_disposals
   end
 
-  defp sorting_icon(%{sort_by: column}, column) do
+  defp sorting_icon(%{sort_by: column, sort_direction: "asc"}, column) do
+    Heroicons.Solid.chevron_up(class: "w-3 h-3 text-blue-400")
+  end
+
+  defp sorting_icon(%{sort_by: column, sort_direction: "desc"}, column) do
     Heroicons.Solid.chevron_down(class: "w-3 h-3 text-blue-400")
   end
 
   defp sorting_icon(_filter, _column) do
     Heroicons.Solid.chevron_down(class: "w-3 h-3")
   end
+
+  defp sort_direction(%{sort_by: column} = filter, column), do: toggle_sort_direction(filter)
+  defp sort_direction(_filter, _column), do: "desc"
+
+  defp toggle_sort_direction(%{sort_direction: "asc"}), do: "desc"
+  defp toggle_sort_direction(_), do: "asc"
+
+  defp show_disposal_columns?(%{min_goals: 0}), do: true
+  defp show_disposal_columns?(_filter), do: false
+
+  # disposal columns
+  defp table_columns(%{min_goals: 0}) do
+    ~w(guernsey_number name avg min max)
+  end
+
+  # goal columns
+  defp table_columns(_) do
+    ~w(guernsey_number name)
+  end
+
+  defp column_label("guernsey_number"), do: "#"
+  defp column_label(column), do: String.capitalize(column)
 end

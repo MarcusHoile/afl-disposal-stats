@@ -61,40 +61,28 @@
     <thead>
       <tr>
         <th colspan="3"></th>
-        <th colspan="3">Disposals</th>
+        <%= if show_disposal_columns?(@filter) do %>
+          <th colspan="3">Disposals</th>
+        <% end %>
         <th class="text-left">
+          <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | sort_by: "form", sort_direction: sort_direction(@filter, "form") }) do %>
           <div class="flex items-center">
             Form <%= sorting_icon(current_params(@filter), "form") %>
           </div>
+          <% end %>
         </th>
       </tr>
       <tr>
         <th><span class="hidden lg:visible">Team</span></th>
-        <th class="text-center">
-          <div class="flex items-center justify-center">
-            # <%= sorting_icon(current_params(@filter), "guernsey_number") %>
-          </div>
-        </th>
-        <th class="text-left">
-          <div class="flex items-center justify-center">
-            Name <%= sorting_icon(current_params(@filter), "name") %>
-          </div>
-        </th>
-        <th>
-          <div class="flex items-center justify-center">
-            Avg <%= sorting_icon(current_params(@filter), "avg") %>
-          </div>
-        </th>
-        <th>
-          <div class="flex items-center justify-center">
-            Min <%= sorting_icon(current_params(@filter), "min") %>
-          </div>
-        </th>
-        <th>
-          <div class="flex items-center justify-center">
-            Max <%= sorting_icon(current_params(@filter), "max") %>
-          </div>
-        </th>
+        <%= for column <- table_columns(@filter) do %>
+          <th class="text-left">
+            <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | sort_by: column, sort_direction: sort_direction(@filter, column) }) do %>
+            <div class="flex items-center justify-center">
+              <%= column_label(column) %> <%= sorting_icon(current_params(@filter), column) %>
+            </div>
+            <% end %>
+          </th>
+        <% end %>
         <th>
           <div class="flex">
           <%= for round <- @previous_rounds do %>
@@ -115,9 +103,11 @@
           </td>
           <td class="py-1"><div class="px-2 text-center"><%= player_stat.guernsey_number %></div></td>
           <td><div class="truncate w-24"><%= player_stat.name %></div></td>
-          <td><div class="px-2"><%= Float.round(player_stat.avg_disposals, 1) %></div></td>
-          <td><div class="px-2"><%= player_stat.min_disposals %></div></td>
-          <td><div class="px-2"><%= player_stat.max_disposals %></div></td>
+          <%= if show_disposal_columns?(@filter) do %>
+            <td><div class="px-2"><%= Float.round(player_stat.avg_disposals, 1) %></div></td>
+            <td><div class="px-2"><%= player_stat.min_disposals %></div></td>
+            <td><div class="px-2"><%= player_stat.max_disposals %></div></td>
+          <% end %>
           <td>
             <div class="flex">
             <%= for stat <- player_stat.form do %>

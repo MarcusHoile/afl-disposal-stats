@@ -19,7 +19,16 @@ defmodule PlayerStats.Filter do
 
   def build!(filter, attrs) do
     filter
-    |> cast(attrs, [:current_year, :filter_by_streak, :min_disposals, :min_goals, :min_streak, :team_ids])
+    |> cast(attrs, [
+      :current_year,
+      :filter_by_streak,
+      :min_disposals,
+      :min_goals,
+      :min_streak,
+      :sort_by,
+      :sort_direction,
+      :team_ids
+    ])
     |> apply_action(:insert)
     |> case do
       {:ok, data} -> data
