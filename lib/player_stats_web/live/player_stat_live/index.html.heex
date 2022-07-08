@@ -16,13 +16,13 @@
   <div class="flex justify-between items-center">
     <div>Disposal Target</div>
     <div class="flex w-1/2 justify-start">
-      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 15, min_goals: 0}) do %>
+      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 15, min_goals: 0, sort_by: "form", sort_direction: "desc"}) do %>
         <div class={"rounded p-4 border border-gray-400 #{target_disposal_css(@filter, 15)}"}>15+</div>
       <% end %>
-      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 20, min_goals: 0}) do %>
+      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 20, min_goals: 0, sort_by: "form", sort_direction: "desc"}) do %>
         <div class={"rounded p-4 border border-gray-400 #{target_disposal_css(@filter, 20)}"}>20+</div>
       <% end %>
-      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 25, min_goals: 0}) do %>
+      <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_disposals: 25, min_goals: 0, sort_by: "form", sort_direction: "desc"}) do %>
         <div class={"rounded p-4 border border-gray-400 #{target_disposal_css(@filter, 25)}"}>25+</div>
       <% end %>
     </div>
@@ -31,10 +31,10 @@
   <div class="flex justify-between items-center pt-6">
     <div>Goal Target</div>
     <div class="flex w-1/2 justify-start">
-    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_goals: 1, min_disposals: 0}) do %>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_goals: 1, min_disposals: 0, sort_by: "form", sort_direction: "desc"}) do %>
       <div class={"rounded p-4 border border-gray-400 #{target_goal_css(@filter, 1)}"}>1+</div>
     <% end %>
-    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_goals: 2, min_disposals: 0}) do %>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | min_goals: 2, min_disposals: 0, sort_by: "form", sort_direction: "desc"}) do %>
       <div class={"rounded p-4 border border-gray-400 #{target_goal_css(@filter, 2)}"}>2+</div>
     <% end %>
     </div>
