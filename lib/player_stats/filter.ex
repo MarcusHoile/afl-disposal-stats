@@ -8,10 +8,12 @@ defmodule PlayerStats.Filter do
   @primary_key false
   embedded_schema do
     field :current_year, :integer
+    field :filter_by_streak, :boolean, default: true
     field :min_disposals, :integer, default: 0
     field :min_goals, :integer, default: 0
     field :min_streak, :integer, default: 2
-    field :filter_by_streak, :boolean, default: true
+    field :sort_by, :string, default: "form"
+    field :sort_direction, :string, default: "desc"
     field :team_ids, {:array, :integer}, default: []
   end
 

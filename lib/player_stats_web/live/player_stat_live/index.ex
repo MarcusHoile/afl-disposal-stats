@@ -67,6 +67,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp build_player_stat_row(
          %{
            game_players: game_players,
+           guernsey_number: guernsey_number,
            player: %{first_name: first_name, id: player_id, last_name: last_name},
            team_season: %{team: %{id: team_id, name: team_name}}
          },
@@ -81,9 +82,11 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       avg_disposals: avg_disposals(disposals, game_players),
       first_name: first_name,
       form: form_data,
+      guernsey_number: guernsey_number,
       last_name: last_name,
       max_disposals: Enum.max(disposals),
       min_disposals: Enum.min(disposals),
+      name: "#{String.first(first_name)}. #{last_name}",
       player_id: player_id,
       streak: streak(form_data),
       team_name: team_name
@@ -229,5 +232,13 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp stat_target_difference(%{disposals: disposals}, %{min_disposals: min_disposals}) do
     disposals - min_disposals
+  end
+
+  defp sorting_icon(%{sort_by: column}, column) do
+    Heroicons.Solid.chevron_down(class: "w-3 h-3 text-blue-400")
+  end
+
+  defp sorting_icon(_filter, _column) do
+    Heroicons.Solid.chevron_down(class: "w-3 h-3")
   end
 end
