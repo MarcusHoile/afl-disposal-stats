@@ -39,7 +39,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       |> PlayerStats.list_players()
       |> Enum.map(&build_player_stat_row(&1, data, filter))
       |> maybe_filter_by_streak(filter)
-      |> Enum.sort_by(& &1.streak, :desc)
+      |> sort_by(filter)
 
     assign(socket, :stats, stats)
   end
@@ -257,14 +257,22 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   # disposal columns
   defp table_columns(%{min_goals: 0}) do
-    ~w(guernsey_number name avg min max)
+    ~w(guernsey_number last_name avg_disposals min_disposals max_disposals)
   end
 
   # goal columns
   defp table_columns(_) do
-    ~w(guernsey_number name)
+    ~w(guernsey_number last_name)
   end
 
   defp column_label("guernsey_number"), do: "#"
+  defp column_label("last_name"), do: "Name"
+  defp column_label("avg_disposals"), do: "Avg"
+  defp column_label("min_disposals"), do: "Min"
+  defp column_label("max_disposals"), do: "Max"
   defp column_label(column), do: String.capitalize(column)
+
+  defp sort_by(data, %{sort_by: sort_by, sort_direction: sort_direction}) do
+    Enum.sort_by(data, &Map.get(&1, String.to_existing_atom(sort_by)), String.to_existing_atom(sort_direction))
+  end
 end
