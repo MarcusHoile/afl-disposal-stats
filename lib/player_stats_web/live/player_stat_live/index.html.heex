@@ -66,7 +66,7 @@
         <% end %>
         <th class="text-left">
           <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | sort_by: "form", sort_direction: sort_direction(@filter, "form") }) do %>
-          <div class="flex items-center">
+          <div class={"flex items-center #{sorting_column_css(@filter, "form")}"}>
             Form <%= sorting_icon(current_params(@filter), "form") %>
           </div>
           <% end %>
@@ -77,7 +77,7 @@
         <%= for column <- table_columns(@filter) do %>
           <th class="text-left">
             <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | sort_by: column, sort_direction: sort_direction(@filter, column) }) do %>
-            <div class="flex items-center justify-center">
+            <div class={"flex items-center justify-center #{sorting_column_css(@filter, column)}"}>
               <%= column_label(column) %> <%= sorting_icon(current_params(@filter), column) %>
             </div>
             <% end %>

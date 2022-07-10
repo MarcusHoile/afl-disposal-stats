@@ -235,11 +235,11 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   end
 
   defp sorting_icon(%{sort_by: column, sort_direction: "asc"}, column) do
-    Heroicons.Solid.chevron_up(class: "w-3 h-3 text-blue-400")
+    Heroicons.Solid.arrow_sm_up(class: "w-3 h-3")
   end
 
   defp sorting_icon(%{sort_by: column, sort_direction: "desc"}, column) do
-    Heroicons.Solid.chevron_down(class: "w-3 h-3 text-blue-400")
+    Heroicons.Solid.arrow_sm_down(class: "w-3 h-3")
   end
 
   defp sorting_icon(_filter, _column) do
@@ -275,4 +275,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
   defp sort_by(data, %{sort_by: sort_by, sort_direction: sort_direction}) do
     Enum.sort_by(data, &Map.get(&1, String.to_existing_atom(sort_by)), String.to_existing_atom(sort_direction))
   end
+
+  defp sorting_column_css(%{sort_by: column}, column), do: "text-violet-500"
+  defp sorting_column_css(_filter, _column), do: ""
 end
