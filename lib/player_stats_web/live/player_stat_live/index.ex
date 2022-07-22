@@ -156,15 +156,37 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp current_params(filter), do: Map.from_struct(filter)
 
-  defp merge_team_params(%{team_ids: [_, _]} = filter, team) do
+  defp merge_team_params(%{team_ids: []} = filter, team) do
     filter
     |> Map.put(:team_ids, [team.id])
     |> current_params()
   end
 
-  defp merge_team_params(%{team_ids: team_ids} = filter, team) do
+  defp merge_team_params(%{team_ids: [team_id]} = filter, %{id: team_id}) do
     filter
-    |> Map.put(:team_ids, Enum.uniq([team.id | team_ids]))
+    |> Map.put(:team_ids, [])
+    |> current_params()
+  end
+
+  defp merge_team_params(%{team_ids: [team_id]} = filter, %{id: other_team_id}) do
+    filter
+    |> Map.put(:team_ids, [team_id, other_team_id])
+    |> current_params()
+  end
+
+  defp merge_team_params(%{team_ids: team_ids} = filter, team) do
+    team_ids =
+      (team_ids -- [team.id])
+      |> case do
+        [_] = team_ids ->
+          team_ids
+
+        _ ->
+          [team.id]
+      end
+
+    filter
+    |> Map.put(:team_ids, team_ids)
     |> current_params()
   end
 
