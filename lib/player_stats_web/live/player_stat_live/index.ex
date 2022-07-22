@@ -216,19 +216,19 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference > 0 do
     ~H"""
-    <p class="bg-green-300 text-green-800 game-form-table-cell">+<%= @stat_target_difference %></p>
+    <p class="bg-emerald-300 text-green-800 game-form-table-cell">+<%= @stat_target_difference %></p>
     """
   end
 
   defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference < 0 do
     ~H"""
-    <p class="bg-red-400 text-red-700 game-form-table-cell">-<%= abs(@stat_target_difference) %></p>
+    <p class="bg-rose-400 text-red-900 game-form-table-cell">-<%= abs(@stat_target_difference) %></p>
     """
   end
 
   defp game_form(%{stat_target_difference: 0} = assigns) do
     ~H"""
-    <p class="bg-green-400 text-green-700 game-form-table-cell flex items-center justify-center"><%= Heroicons.Solid.check(class: "w-3 h-3") %></p>
+    <p class="bg-teal-400 text-cyan-700 game-form-table-cell flex items-center justify-center"><%= Heroicons.Solid.check(class: "w-4 h-4") %></p>
     """
   end
 
