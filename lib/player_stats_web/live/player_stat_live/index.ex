@@ -101,6 +101,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     Enum.reduce_while(form, 0, fn
       %{bye: true}, acc -> {:cont, acc}
       %{played: false, bye: false}, acc -> {:halt, acc}
+      %{played: true, stat_target_difference: difference}, acc when is_binary(difference) -> {:halt, acc}
       %{played: true, stat_target_difference: difference}, acc when difference < 0 -> {:halt, acc}
       _, acc -> {:cont, acc + 1}
     end)
@@ -207,21 +208,27 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     """
   end
 
+  defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when is_binary(stat_target_difference) do
+    ~H"""
+    <p class="bg-red-400 text-red-700 game-form-table-cell"><%= @stat_target_difference %></p>
+    """
+  end
+
   defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference > 0 do
     ~H"""
-    <p class="bg-green-400 game-form-table-cell">+<%= @stat_target_difference %></p>
+    <p class="bg-green-300 text-green-800 game-form-table-cell">+<%= @stat_target_difference %></p>
     """
   end
 
   defp game_form(%{stat_target_difference: stat_target_difference} = assigns) when stat_target_difference < 0 do
     ~H"""
-    <p class="bg-red-400 game-form-table-cell">-<%= abs(@stat_target_difference) %></p>
+    <p class="bg-red-400 text-red-700 game-form-table-cell">-<%= abs(@stat_target_difference) %></p>
     """
   end
 
   defp game_form(%{stat_target_difference: 0} = assigns) do
     ~H"""
-    <p class="bg-cyan-300 game-form-table-cell">0</p>
+    <p class="bg-green-400 text-green-700 game-form-table-cell flex items-center justify-center"><%= Heroicons.Solid.check(class: "w-3 h-3") %></p>
     """
   end
 
@@ -246,6 +253,10 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     name
     |> String.downcase()
     |> String.replace(" ", "-")
+  end
+
+  defp stat_target_difference(%{goals: 0}, %{min_goals: 1}) do
+    "x"
   end
 
   defp stat_target_difference(%{goals: goals}, %{min_goals: min_goals}) when min_goals > 0 do
