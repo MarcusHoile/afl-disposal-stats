@@ -10,7 +10,7 @@ defmodule PlayerStats.Crawler.UrlFilter do
   @allowed_domain "afltables.com"
   # @allowed_paths ~r/leagues|organisations/
   # @allowed_paths ~r/afl\/stats\/games\/2021\/031420210318|afl\/seas\/2021/
-  @allowed_paths ~r/afl\/stats\/games\/2022|afl\/seas\/2022/
+  @allowed_paths ~r/afl\/stats\/games\/202|afl\/seas\/202/
   def filter(url, _opts) do
     with true <- allowed_domain?(url),
          true <- allowed_path?(url),

@@ -5,7 +5,7 @@ defmodule PlayerStats.Schema.Game do
   schema "games" do
     field :external_id, :string
     field :played_at, :utc_datetime
-    field :round, :integer
+    field :round, :string
     belongs_to :season, PlayerStats.Schema.Season
 
     has_many :game_players, PlayerStats.Schema.GamePlayer

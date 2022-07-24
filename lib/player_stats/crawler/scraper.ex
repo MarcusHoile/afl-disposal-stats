@@ -9,6 +9,7 @@ defmodule PlayerStats.Crawler.Scraper do
   alias Crawler.Store.Page
   alias PlayerStats.{Repo, Schema}
 
+  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
   def scrape(%Page{url: "https://afltables.com/afl/stats/games" <> _ = url, body: body, opts: _opts} = page) do
     {:ok, html} = Floki.parse_document(body)
 
@@ -72,9 +73,8 @@ defmodule PlayerStats.Crawler.Scraper do
 
   defp scrape_game_player_data(table, header, team_season, game, n) do
     with player_data <- find_player_data(table, n, header),
-         {:ok, player_season} <- find_or_create_player_season(player_data, team_season),
-         {:ok, game_player} <- create_or_update_game_player(game, player_season, player_data) do
-      {:ok, game_player}
+         {:ok, player_season} <- find_or_create_player_season(player_data, team_season) do
+      create_or_update_game_player(game, player_season, player_data)
     end
   end
 
@@ -281,15 +281,11 @@ defmodule PlayerStats.Crawler.Scraper do
   end
 
   defp find_round(html) do
-    row =
-      html
-      |> Floki.find("table:first-of-type")
-      |> Floki.find("tr:first-of-type td:nth-child(2)")
-      |> Floki.text()
+    row = html |> Floki.find("table:first-of-type") |> Floki.find("tr:first-of-type td:nth-child(2)") |> Floki.text()
 
-    %{"round" => round} = Regex.named_captures(~r/(?<=Round: )(?<round>\d+)/, row)
+    %{"round" => round} = Regex.named_captures(~r/(?<=Round: )(?<round>.+)Venue/, row)
 
-    String.to_integer(round)
+    String.trim(round)
   end
 
   defp find_or_create_page(url) do
