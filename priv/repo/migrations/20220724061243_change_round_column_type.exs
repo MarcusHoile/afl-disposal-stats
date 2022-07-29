@@ -8,8 +8,5 @@ defmodule PlayerStats.Repo.Migrations.ChangeRoundColumnType do
   end
 
   def down do
-    alter table(:games) do
-      modify :round, :integer, null: false
-    end
   end
 end
