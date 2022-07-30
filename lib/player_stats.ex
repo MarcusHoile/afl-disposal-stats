@@ -55,7 +55,6 @@ defmodule PlayerStats do
       on: s.year == ^current_year,
       join: t in assoc(ts, :team),
       left_join: gp in assoc(ps, :game_players),
-      left_join: g in assoc(gp, :game),
       preload: [game_players: {gp, :game}, player: p, team_season: :team]
     )
   end

@@ -117,6 +117,8 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
     end)
     |> case do
       %{hit_target: target} when target > 3 -> true
+      %{hit_target: game_count, game_count: game_count} when game_count > 0 -> true
+      %{missed_target: missed_target, game_count: game_count} when game_count > 2 and missed_target < 2 -> true
       _ -> false
     end
   end
