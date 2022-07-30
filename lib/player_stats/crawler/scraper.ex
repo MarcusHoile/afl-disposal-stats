@@ -245,11 +245,14 @@ defmodule PlayerStats.Crawler.Scraper do
     |> PlayerStats.Repo.get_by(external_id: game_id)
     |> case do
       nil ->
+        round_title = find_round(html)
+
         %PlayerStats.Schema.Game{}
         |> PlayerStats.Schema.Game.changeset(%{
           external_id: game_id,
           played_at: find_played_at(html),
-          round: find_round(html),
+          round: round_number(round_title),
+          round_title: round_title,
           season_id: find_season(current_year).id
         })
         |> PlayerStats.Repo.insert()
@@ -277,6 +280,15 @@ defmodule PlayerStats.Crawler.Scraper do
 
       {:ok, datetime} ->
         datetime
+    end
+  end
+
+  defp round_number(round_title) do
+    ~r/[0-9]+/
+    |> Regex.scan(round_title)
+    |> case do
+      [] -> nil
+      [[round]] -> String.to_integer(round)
     end
   end
 

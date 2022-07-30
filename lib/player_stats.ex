@@ -8,11 +8,11 @@ defmodule PlayerStats do
       join: t in assoc(g, :teams),
       join: s in assoc(g, :season),
       on: s.year == ^current_year,
+      order_by: [desc: g.round],
       distinct: true,
       select: g.round
     )
     |> Repo.all()
-    |> Enum.sort_by(&String.to_integer/1, :desc)
   end
 
   def list_players(%PlayerStats.Filter{team_ids: [t1, t2]} = filter) do
