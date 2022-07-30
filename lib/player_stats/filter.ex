@@ -8,7 +8,8 @@ defmodule PlayerStats.Filter do
   @primary_key false
   embedded_schema do
     field :current_year, :integer
-    field :filter_by_streak, :boolean, default: true
+    field :filter_by_streak, :boolean, default: false
+    field :filter_by_recent_form, :boolean, default: true
     field :min_disposals, :integer, default: 0
     field :min_goals, :integer, default: 0
     field :min_streak, :integer, default: 2
@@ -21,6 +22,7 @@ defmodule PlayerStats.Filter do
     filter
     |> cast(attrs, [
       :current_year,
+      :filter_by_recent_form,
       :filter_by_streak,
       :min_disposals,
       :min_goals,

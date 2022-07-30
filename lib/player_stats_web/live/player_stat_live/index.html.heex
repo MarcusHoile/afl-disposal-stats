@@ -40,13 +40,13 @@
     </div>
   </div>
   <div class="px-2 py-2">
-    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_streak: true}) do %>
-      <%= tag :input, type: "radio", id: "filter-players-by-streak", name: "player_streak_filter", checked: @filter.filter_by_streak %>
-      <label for="filter-players-by-streak" class="pr-2">Players in form</label>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_recent_form: true}) do %>
+      <%= tag :input, type: "radio", id: "filter-players-by-form", name: "player_form_filter", checked: @filter.filter_by_recent_form %>
+      <label for="filter-players-by-form" class="pr-2">Players in form</label>
     <% end %>
 
-    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_streak: false}) do %>
-      <%= tag :input, type: "radio", id: "show-all-players", name: "player_streak_filter", checked: !@filter.filter_by_streak %>
+    <%= live_patch to: Routes.player_stat_index_path(@socket, :index, %{current_params(@filter) | filter_by_recent_form: false}) do %>
+      <%= tag :input, type: "radio", id: "show-all-players", name: "player_form_filter", checked: !@filter.filter_by_recent_form %>
       <label for="show-all-players">Show all players</label>
     <% end %>
   </div>

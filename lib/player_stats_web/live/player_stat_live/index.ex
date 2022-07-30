@@ -38,17 +38,17 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       filter
       |> PlayerStats.list_players()
       |> Enum.map(&build_player_stat_row(&1, data, filter))
-      |> maybe_filter_by_streak(filter)
+      |> maybe_filter_by_recent_form(filter)
       |> sort_by(filter)
 
     assign(socket, :stats, stats)
   end
 
-  defp maybe_filter_by_streak(data, %{filter_by_streak: true, min_streak: min_streak}) do
-    Enum.filter(data, &(&1.streak >= min_streak))
+  defp maybe_filter_by_recent_form(data, %{filter_by_recent_form: true}) do
+    Enum.filter(data, & &1.in_form)
   end
 
-  defp maybe_filter_by_streak(data, _filter), do: data
+  defp maybe_filter_by_recent_form(data, _filter), do: data
 
   defp team_games(%{team_ids: team_ids} = filter) do
     games = PlayerStats.team_games(filter)
@@ -83,6 +83,7 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       first_name: first_name,
       form: form_data,
       guernsey_number: guernsey_number,
+      in_form: is_in_form?(form_data),
       last_name: last_name,
       max_disposals: Enum.max(disposals),
       min_disposals: Enum.min(disposals),
@@ -95,6 +96,34 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
 
   defp avg_disposals(disposals, game_players) do
     Enum.sum(disposals) / Enum.count(game_players)
+  end
+
+  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
+  defp is_in_form?(form) do
+    Enum.reduce_while(form, %{hit_target: 0, missed_target: 0, game_count: 0}, fn
+      %{played: true, stat_target_difference: difference}, acc
+      when is_binary(difference) or difference < 0 ->
+        if acc.missed_target == 1 do
+          {:halt, Map.merge(acc, %{missed_target: 2, game_count: acc.game_count + 1})}
+        else
+          {:cont, Map.merge(acc, %{missed_target: 1, game_count: acc.game_count + 1})}
+        end
+
+      %{played: true}, acc ->
+        if acc.game_count == 4 do
+          {:halt, Map.merge(acc, %{game_count: acc.game_count + 1, hit_target: acc.hit_target + 1})}
+        else
+          {:cont, Map.merge(acc, %{game_count: acc.game_count + 1, hit_target: acc.hit_target + 1})}
+        end
+
+      _, acc ->
+        {:cont, acc}
+    end)
+    |> case do
+      %{missed_target: 2} -> false
+      %{hit_target: target} when target > 1 -> true
+      _ -> false
+    end
   end
 
   defp streak(form) do
