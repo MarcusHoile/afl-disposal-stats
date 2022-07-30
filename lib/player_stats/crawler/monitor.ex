@@ -42,8 +42,8 @@ defmodule PlayerStats.Crawler.Monitor do
     Process.send_after(self(), :check_complete, @interval_check)
   end
 
-  defp stop_crawler(state) do
-    # TODO add rounds to finals games
+  defp stop_crawler(%{season: season} = state) do
+    PlayerStats.add_round_to_finals_games(season)
     Crawler.stop(state)
   end
 
