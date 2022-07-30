@@ -112,14 +112,25 @@ defmodule PlayerStatsWeb.PlayerStatLive.Index do
       %{played: true}, acc ->
         {:cont, Map.merge(acc, %{game_count: acc.game_count + 1, hit_target: acc.hit_target + 1})}
 
-      _, acc ->
+      %{bye: true}, acc ->
         {:cont, acc}
+
+      _, acc ->
+        {:cont, Map.put(acc, :game_count, acc.game_count + 1)}
     end)
     |> case do
-      %{hit_target: target} when target > 3 -> true
-      %{hit_target: game_count, game_count: game_count} when game_count > 0 -> true
-      %{missed_target: missed_target, game_count: game_count} when game_count > 2 and missed_target < 2 -> true
-      _ -> false
+      %{hit_target: target} when target > 3 ->
+        true
+
+      %{hit_target: game_count, game_count: game_count} when game_count > 0 ->
+        true
+
+      %{missed_target: missed_target, game_count: game_count, hit_target: hit_target}
+      when game_count > 2 and hit_target > 2 and missed_target < 2 ->
+        true
+
+      _ ->
+        false
     end
   end
 
