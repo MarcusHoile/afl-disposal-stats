@@ -7,7 +7,7 @@ defmodule PlayerStats.Repo.Migrations.CreateGames do
       add :played_at, :utc_datetime, null: false
       add :round, :integer, null: true
       add :round_title, :string, null: false
-      add :season_id, references(:seasons, on_delete: :nothing), null: false
+      add :season_id, references(:seasons, on_delete: :delete_all), null: false
 
       timestamps()
     end

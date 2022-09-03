@@ -10,7 +10,7 @@ defmodule PlayerStats.Crawler.Scraper do
   alias PlayerStats.{Repo, Schema}
 
   # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
-  def scrape(%Page{url: "https://afltables.com/afl/stats/games" <> _ = url, body: body, opts: _opts} = page) do
+  def scrape(%Page{url: "https://afltables.com/afl/stats/games/" <> _ = url, body: body, opts: _opts} = page) do
     {:ok, html} = Floki.parse_document(body)
 
     with current_year <- get_current_year(url),
@@ -20,16 +20,8 @@ defmodule PlayerStats.Crawler.Scraper do
          {:ok, game} <- find_or_create_game(html, current_year, url),
          {:ok, game} <- save_game_teams(game, team_season_a, team_season_b),
          [table_a, table_b] <- find_team_tables(html),
-         :ok <-
-           save_team_data(table_a, %{
-             team_season: team_season_a,
-             game: game
-           }),
-         :ok <-
-           save_team_data(table_b, %{
-             team_season: team_season_b,
-             game: game
-           }),
+         :ok <- save_team_data(table_a, %{team_season: team_season_a, game: game}),
+         :ok <- save_team_data(table_b, %{team_season: team_season_b, game: game}),
          {:ok, _db_page} <- mark_page_scraped(db_page) do
       {:ok, page}
     else
@@ -263,24 +255,28 @@ defmodule PlayerStats.Crawler.Scraper do
   end
 
   defp find_played_at(html) do
+    # eg "Round: 1 Venue: DocklandsDate: Fri, 18-Mar-2022 7:50 PM (6:50 PM) Attendance: 40129"
     row =
       html
       |> Floki.find("table:first-of-type")
       |> Floki.find("tr:first-of-type td:nth-child(2)")
       |> Floki.text()
 
-    %{"played_at" => played_at} = Regex.named_captures(~r/(?<=Date:)\D+(?<played_at>\d{1,2}\-[a-zA-Z]+\-\d+)/, row)
+    %{"played_at" => played_at} = Regex.named_captures(~r/Date:\s.*,\s(?<played_at>.*?(?=\s\(|\sA))/, row)
+
+    date_format = "%d-%b-%Y %l:%M %p"
 
     played_at
-    |> Timex.parse("%d-%b-%Y", :strftime)
+    |> Timex.parse(date_format, :strftime)
     |> case do
       {:error, _} ->
         ("0" <> played_at)
-        |> Timex.parse!("%d-%b-%Y", :strftime)
+        |> Timex.parse!(date_format, :strftime)
 
       {:ok, datetime} ->
         datetime
     end
+    |> DateTime.from_naive!("Australia/Sydney")
   end
 
   defp round_number(round_title) do
@@ -305,7 +301,9 @@ defmodule PlayerStats.Crawler.Scraper do
     |> Repo.get_by(url: url)
     |> case do
       nil ->
-        %Schema.Page{scraped: false, url: url}
+        %{path: path} = URI.parse(url)
+
+        %Schema.Page{scraped: false, path: path, url: url}
         |> Repo.insert()
 
       page ->

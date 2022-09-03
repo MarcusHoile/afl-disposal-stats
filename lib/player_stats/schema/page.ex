@@ -3,6 +3,7 @@ defmodule PlayerStats.Schema.Page do
   import Ecto.Changeset
 
   schema "pages" do
+    field :path, :string
     field :scraped, :boolean
     field :url, :string
 
@@ -12,7 +13,7 @@ defmodule PlayerStats.Schema.Page do
   @doc false
   def changeset(page, attrs) do
     page
-    |> cast(attrs, [:scraped, :url])
-    |> validate_required([:scraped, :url])
+    |> cast(attrs, [:path, :scraped, :url])
+    |> validate_required([:path, :scraped, :url])
   end
 end
