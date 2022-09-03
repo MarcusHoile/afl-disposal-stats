@@ -9,6 +9,21 @@ defmodule PlayerStats.Crawler.Scraper do
   alias Crawler.Store.Page
   alias PlayerStats.{Repo, Schema}
 
+  def rescrape(season) do
+    Schema.Season |> Repo.get_by(year: season) |> Repo.delete()
+
+    Schema.Page
+    |> Repo.all()
+    |> Enum.each(fn %{url: url, path: path} ->
+      body =
+        "#{File.cwd!()}/../../Documents/player-stats/afltables.com#{path}"
+        |> Path.expand()
+        |> File.read!()
+
+      scrape(%Page{url: url, body: body})
+    end)
+  end
+
   # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
   def scrape(%Page{url: "https://afltables.com/afl/stats/games/" <> _ = url, body: body, opts: _opts} = page) do
     {:ok, html} = Floki.parse_document(body)
