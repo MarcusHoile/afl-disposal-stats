@@ -9,6 +9,25 @@ defmodule PlayerStats.Crawler.Scraper do
   alias Crawler.Store.Page
   alias PlayerStats.{Repo, Schema}
 
+  def rescrape do
+    Schema.Page
+    |> Repo.all()
+    |> Enum.each(&rescrape/1)
+  end
+
+  def rescrape(%Schema.Page{id: page_id, url: url, path: path}) do
+    body =
+      "#{File.cwd!()}/../../Documents/player-stats/afltables.com#{path}"
+      |> Path.expand()
+      |> File.read!()
+
+    scrape(%Page{url: url, body: body})
+  rescue
+    error ->
+      Logger.info(url: url, page_id: page_id)
+      reraise(error, __STACKTRACE__)
+  end
+
   def rescrape(season) do
     Schema.Season |> Repo.get_by(year: season) |> Repo.delete()
 
@@ -35,8 +54,8 @@ defmodule PlayerStats.Crawler.Scraper do
          {:ok, game} <- find_or_create_game(html, current_year, url),
          {:ok, game} <- save_game_teams(game, team_season_a, team_season_b),
          [table_a, table_b] <- find_team_tables(html),
-         :ok <- save_team_data(table_a, %{team_season: team_season_a, game: game}),
-         :ok <- save_team_data(table_b, %{team_season: team_season_b, game: game}),
+         :ok <- save_team_data(table_a, %{current_year: current_year, team_season: team_season_a, game: game}),
+         :ok <- save_team_data(table_b, %{current_year: current_year, team_season: team_season_b, game: game}),
          {:ok, _db_page} <- mark_page_scraped(db_page) do
       {:ok, page}
     else
@@ -57,10 +76,10 @@ defmodule PlayerStats.Crawler.Scraper do
     |> String.to_integer()
   end
 
-  defp save_team_data(team_table, %{team_season: team_season, game: game}) do
+  defp save_team_data(team_table, %{team_season: team_season, game: game} = attrs) do
     header = header_row(team_table)
 
-    1..23
+    1..player_count(attrs)
     |> Enum.map(&scrape_game_player_data(team_table, header, team_season, game, &1))
     |> Enum.all?(fn
       {:ok, _} ->
@@ -277,7 +296,7 @@ defmodule PlayerStats.Crawler.Scraper do
       |> Floki.find("tr:first-of-type td:nth-child(2)")
       |> Floki.text()
 
-    %{"played_at" => played_at} = Regex.named_captures(~r/Date:\s.*,\s(?<played_at>.*?(?=\s\(|\sA))/, row)
+    %{"played_at" => played_at} = Regex.named_captures(~r/Date:\s.*,\s(?<played_at>.*?(?<=PM))/, row)
 
     date_format = "%d-%b-%Y %l:%M %p"
 
@@ -353,5 +372,9 @@ defmodule PlayerStats.Crawler.Scraper do
     |> change()
     |> Ecto.Changeset.put_assoc(:teams, teams)
     |> Repo.update()
+  end
+
+  defp player_count(%{current_year: year}) do
+    if year < 2021, do: 22, else: 23
   end
 end
