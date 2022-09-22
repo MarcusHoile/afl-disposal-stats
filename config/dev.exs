@@ -10,7 +10,7 @@ config :player_stats, PlayerStats.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-config :player_stats, PlayerStats.Crawler, save_to: "/Users/marcus/Documents/player-stats"
+config :player_stats, PlayerStats.Crawler, save_to: "/Users/marcushoile/Documents/player-stats"
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
