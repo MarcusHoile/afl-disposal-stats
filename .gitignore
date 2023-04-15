@@ -32,4 +32,4 @@ player_stats-*.tar
 npm-debug.log
 /assets/node_modules/
 
-wireguard.conf
+*wireguard.conf
